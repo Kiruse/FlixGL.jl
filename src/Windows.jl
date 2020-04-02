@@ -61,3 +61,5 @@ Window() = Window(WindowCreationArgs())
 
 use(wnd::Window) = GLFW.MakeContextCurrent(wnd.handle)
 destroy(wnd::Window) = GLFW.DestroyWindow(wnd.handle)
+
+flip(wnd::Window) = GLFW.SwapBuffers(wnd.handle)

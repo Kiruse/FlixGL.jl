@@ -28,7 +28,7 @@ end
 
 function shader(shader_t::Type{<:AbstractShader})
     shdr = shader_t(ModernGL.glCreateShader(gltype(shader_t)))
-    @assert ModernGL.glGetError() == 0
+    checkglerror()
     return shdr
 end
 
@@ -39,19 +39,23 @@ function load_shader_source(path::AbstractString)
 end
 
 function shader_source(shdr::AbstractShader, src::AbstractString)
-    sources = [src]
-    ModernGL.glShaderSource(glid(shdr), length(sources), pointer(sources), C_NULL)
-    @assert ModernGL.glGetError() == 0
+    sources = [pointer(src)]
+    lengths = [length(src)]
+    ModernGL.glShaderSource(glid(shdr), length(sources), pointer(sources), pointer(lengths))
+    checkglerror()
 end
 
 function shader_compile(shdr::AbstractShader)
     ModernGL.glCompileShader(glid(shdr))
-    @assert ModernGL.glGetError() == 0
+    checkglerror()
+    if getiv(shdr, ShaderParameter.CompileStatus) == 0
+        error("Failed to compile shader: '$(getinfolog(shdr))'")
+    end
 end
 
 function destroy(shdr::AbstractShader)
     ModernGL.glDeleteShader(glid(shdr))
-    @assert ModernGL.glGetError() == 0
+    checkglerror()
 end
 
 
@@ -75,31 +79,34 @@ end
 
 function program()
     prog = Program(ModernGL.glCreateProgram())
-    @assert ModernGL.glGetError() == 0
+    checkglerror()
     return prog
 end
 
 function program_attach(prog::Program, shdr::AbstractShader)
     ModernGL.glAttachShader(glid(prog), glid(shdr))
-    @assert ModernGL.glGetError() == 0
+    checkglerror()
 end
 
 function program_link(prog::Program)
     ModernGL.glLinkProgram(glid(prog))
-    @assert ModernGL.glGetError() == 0
+    checkglerror()
+    if getiv(prog, ProgramParameter.LinkStatus) == 0
+        error("Failed to link program: '$(getinfolog(prog))'")
+    end
 end
 
 function program_detach(prog::Program, shdr::AbstractShader)
     ModernGL.glDetachShader(glid(prog), glid(shdr))
-    @assert ModernGL.glGetError() == 0
+    checkglerror()
 end
 
 function destroy(prog::Program)
     ModernGL.glDeleteProgram(glid(prog))
-    @assert ModernGL.glGetError() == 0
+    checkglerror()
 end
 
 function use(prog::Program)
     ModernGL.glUseProgram(glid(prog))
-    @assert ModernGL.glGetError() == 0
+    checkglerror()
 end
