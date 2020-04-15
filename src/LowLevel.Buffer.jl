@@ -2,7 +2,7 @@ import ModernGL
 using StaticArrays
 
 export AbstractBuffer, ArrayBuffer, ElementArrayBuffer, TextureBuffer, UniformBuffer, PrimitiveArrayBuffer
-export buffer, buffer_upload, buffer_download
+export buffer, buffer_init, buffer_update, buffer_download
 
 abstract type AbstractBuffer <: AbstractGLResource end
 
@@ -66,7 +66,7 @@ gltype(::Type{PrimitiveArrayBuffer{T}}) where T = ModernGL.GL_ARRAY_BUFFER
 function buffer(buffer_t::Type{<:AbstractBuffer}, data::AbstractArray, freq::Type{<:BufferUsage.AbstractFrequency}, nature::Type{<:BufferUsage.AbstractNature}; mapper = identity)
     buff = buffer(buffer_t)
     use(buff)
-    buffer_upload(buff, data, freq, nature, mapper=mapper)
+    buffer_init(buff, data, freq, nature, mapper=mapper)
     return buff
 end
 
@@ -82,11 +82,11 @@ function buffer(buffer_t::Type{<:AbstractBuffer}, n::Integer = 1)
     end
 end
 
-function buffer_upload(buff::AbstractBuffer, data::AbstractArray, freq::Type{<:BufferUsage.AbstractFrequency}, nature::Type{<:BufferUsage.AbstractNature}; mapper = identity)
-    buffer_upload_internal(buff, data, freq, nature, mapper=mapper)
+function buffer_init(buff::AbstractBuffer, data::AbstractArray, freq::Type{<:BufferUsage.AbstractFrequency}, nature::Type{<:BufferUsage.AbstractNature}; mapper = identity)
+    buffer_init_internal(buff, data, freq, nature, mapper=mapper)
 end
 
-function buffer_upload_internal(buff::AbstractBuffer, data::AbstractArray, freq::Type{<:BufferUsage.AbstractFrequency}, nature::Type{<:BufferUsage.AbstractNature}; mapper)
+function buffer_init_internal(buff::AbstractBuffer, data::AbstractArray, freq::Type{<:BufferUsage.AbstractFrequency}, nature::Type{<:BufferUsage.AbstractNature}; mapper)
     usage = glbufferusage(freq, nature)
     byts  = bytes(data, mapper=mapper)
     use(buff)
@@ -94,8 +94,31 @@ function buffer_upload_internal(buff::AbstractBuffer, data::AbstractArray, freq:
     checkglerror()
 end
 
-function buffer_download(buff::AbstractBuffer)
-    error("Not implemented")
+function buffer_update(buff::AbstractBuffer, data::AbstractArray; offset::Integer = 0, mapper)
+    buffer_update_internal(buff, data, offset=offset, mapper=mapper)
+end
+
+function buffer_update_internal(buff::AbstractBuffer, data::AbstractArray; offset::Integer = 0, mapper)
+    byts = bytes(data, mapper=mapper)
+    use(buff)
+    ModernGL.glBufferSubData(gltype(typeof(buff)), Ptr{Int32}(offset), Ptr{Uint32}(sizeof(byts)), pointer(byts))
+    checkerror()
+end
+
+function buffer_download!(data::AbstractArray{UInt8}, buff::AbstractBuffer, size::Integer; offset::Integer = 0)
+    use(buff)
+    if length(data) < size
+        resize!(data, size)
+    end
+    ModernGL.glGetBufferSubData(gltype(typeof(buff)), Ptr{Int32}(offset), Ptr{UInt32}(size), pointer(data))
+    checkglerror()
+    nothing
+end
+
+function buffer_download(buff::AbstractBuffer, size::Integer; offset::Integer = 0)
+    ret = UInt8[]
+    buffer_download!(ret, buff, size, offset=offset)
+    return ret
 end
 
 function use(buff::AbstractBuffer)
