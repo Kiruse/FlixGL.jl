@@ -9,6 +9,7 @@ use(_...) = error("Not implemented")
 include("./LowLevel.Shader.jl")
 include("./LowLevel.Buffer.jl")
 include("./LowLevel.VertexArray.jl")
+include("./LowLevel.Uniform.jl")
 include("./LowLevel.Draw.jl")
 include("./LowLevel.ShaderUtil.jl")
 

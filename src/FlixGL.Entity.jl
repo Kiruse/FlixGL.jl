@@ -4,11 +4,15 @@ abstract type AbstractEntity end
 abstract type AbstractEntity2D <: AbstractEntity end
 
 # Entity Traits
+vertsof(    ntt::AbstractEntity) = error("Not implemented")
 vaoof(      ntt::AbstractEntity) = ntt.vao
 transformof(ntt::AbstractEntity) = ntt.transform
 materialof( ntt::AbstractEntity) = ntt.material
 texturesof( ntt::AbstractEntity) = ntt.textures
 drawmodeof( ntt::AbstractEntity) = LowLevel.TrianglesDrawMode
+
+# Bounding Box - see FlixGL.Util.jl
+bounds(ntt::AbstractEntity) = bounds(collect(vertsof(ntt)))
 
 # Free OpenGL resources at will
 function destroy(ntt::AbstractEntity)

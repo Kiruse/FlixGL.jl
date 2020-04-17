@@ -1,7 +1,7 @@
 import ModernGL
 
 export VertexArray
-export vertexarray, bind
+export vertexarray, findattribute, bind
 
 struct VertexArray <: AbstractGLResource
     glid::Integer
@@ -55,4 +55,10 @@ function destroy(va)
     vas = [glid(va)]
     ModernGL.glDeleteVertexArrays(1, pointer[vas])
     checkglerror()
+end
+
+function findattribute(prog::Program, name::String)
+    id = ModernGL.glGetAttribLocation(prog.glid, pointer(name))
+    checkglerror()
+    id
 end

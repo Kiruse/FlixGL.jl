@@ -20,17 +20,22 @@ include("./FlixGL.Matrix.jl")
 include("./FlixGL.Transform.jl")
 include("./FlixGL.Vertex.jl")
 include("./FlixGL.Material.jl")
+include("./FlixGL.Camera.jl")
 include("./FlixGL.Entity.jl")
 include("./FlixGL.RenderPipeline.jl")
 include("./FlixGL.RenderForward.jl")
 include("./FlixGL.Misc.jl")
 
-function init()
-    GLFW.Init()
+function __init__()
+    
 end
 
-function terminate()
-    GLFW.Terminate()
+function __exit__()
+    wnd = activewindow()
+    if wnd
+        destroy(activewindow())
+    end
 end
+atexit(__exit__)
 
 end # module

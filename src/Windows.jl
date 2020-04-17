@@ -5,6 +5,8 @@ const DontCare = DontCareType()
 
 @enum FullscreenMode Windowed Fullscreen Borderless
 
+active_wnd = nothing
+
 mutable struct WindowCreationArgs
     title::AbstractString
     monitor::Integer
@@ -59,7 +61,10 @@ function Window(args::WindowCreationArgs)
 end
 Window() = Window(WindowCreationArgs())
 
-use(wnd::Window) = GLFW.MakeContextCurrent(wnd.handle)
+Base.size(wnd::Window) = (dims = GLFW.GetWindowSize(wnd.handle); (dims.width, dims.height))
+
+activewindow() = active_wnd
+use(wnd::Window) = (global active_wnd; active_wnd = wnd; GLFW.MakeContextCurrent(wnd.handle))
 destroy(wnd::Window) = GLFW.DestroyWindow(wnd.handle)
 
 flip(wnd::Window) = GLFW.SwapBuffers(wnd.handle)

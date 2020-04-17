@@ -13,20 +13,16 @@ Transform2D() = Transform2D{Float64}()
 
 translate!(transform::Transform2D{T}, off::Vector2{T}) where T = (transform.location += off)
 rotate!(   transform::Transform2D{T}, rot::T)          where T = (transform.rotation += rot)
-scale!(    transform::Transform2D{T}, sca::Vector2{T}) where T = (transform.scale    .*= sca)
+scale!(    transform::Transform2D{T}, sca::Vector2{T}) where T = (transform.scale   .*= sca)
 
 function asmatrix(transform::Transform2D{T}) where T
-    if !transform.dirty
-        return transform.mat
-    end
-    
     l = transform.location
     s = transform.scale
     
     cosr = cos(transform.rotation)
     sinr = sin(transform.rotation)
     
-    transform.mat = Matrix3{T}([s.x*cosr    -sinr   l.x ;
-                                  sinr    s.y*cosr  l.y ;
-                                   0          0      1  ])
+    Matrix3{T}([s[1]*cosr    -sinr   l[1] ;
+                  sinr    s[2]*cosr  l[2] ;
+                   0          0       1   ])
 end

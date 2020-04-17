@@ -81,26 +81,31 @@ function TestPoly(verts::AbstractArray{TestVertex}; transform::Transform2D = Tra
 end
 FlixGL.drawmodeof(ntt::TestPoly) = LowLevel.TriangleFanDrawMode
 
+function FlixGL.bounds(ntt::TestPoly)
+    minx = miny =  Inf
+    maxx = maxy = -Inf
+    for vert ∈ ntt.vertices
+        minx = min(minx, xcoord(vert))
+        miny = min(miny, ycoord(vert))
+        maxx = max(maxx, xcoord(vert))
+        maxy = max(maxy, ycoord(vert))
+    end
+    [Vector2{Float64}(x, y) for (x, y) ∈ ((minx, miny), (maxx, miny), (maxx, maxy), (minx, maxy))]
+end
 
-FlixGL.init()
+
 wnd = FlixGL.Window()
 FlixGL.use(wnd)
 
-verts = [
-    TestVertex(Vector2{Float32}(-0.85, -1),   NormColor(1, 0, 0)),
-    TestVertex(Vector2{Float32}( 0.85, -1),   NormColor(1, 0, 0)),
-    TestVertex(Vector2{Float32}( 1,     0.8), NormColor(0, 1, 0)),
-    TestVertex(Vector2{Float32}( 0,     1),   NormColor(0, 0, 1)),
-    TestVertex(Vector2{Float32}(-1,     0.8), NormColor(0, 1, 0))
-]
-poly = TestPoly(verts)
+cam = Camera2D()
+
+colors = [Green, Red, Green, Blue, Blue]
+verts  = [TestVertex(Vector2{Float32}(100cos(deg2rad(18 + 72i)), 100sin(deg2rad(18 + 72i))), colors[i+1]) for i ∈ 0:4]
+poly   = TestPoly(verts)
 
 start_time = time()
-while time() - start_time < 3
-    render(ForwardRenderPipeline, [poly])
+while time() - start_time < 5
+    render(ForwardRenderPipeline, cam, [poly])
     FlixGL.flip(wnd)
     sleep(1/60)
 end
-
-FlixGL.destroy(wnd)
-FlixGL.terminate()
