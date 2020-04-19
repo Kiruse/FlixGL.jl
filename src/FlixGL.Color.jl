@@ -1,6 +1,6 @@
 using StaticArrays
 
-export AbstractColor, Color, OpaqueColor, NormColor, NormColor3
+export AbstractColor, Color, OpaqueColor, NormColor, NormColor3, ByteColor, ByteColor3
 export mix
 export Red, Green, Blue, Yellow, Cyan, Magenta
 
@@ -73,6 +73,11 @@ Base.:-(lhs::T, rhs::T) where {T<:AbstractColor} = T((tosvector(lhs) .- tosvecto
 Base.:*(lhs::T, rhs::T) where {T<:AbstractColor} = T((tosvector(lhs) .* tosvector(rhs))...)
 Base.:/(lhs::T, rhs::T) where {T<:AbstractColor} = T((tosvector(lhs) ./ tosvector(rhs))...)
 
+Base.:*(lhs::Number, rhs::T) where {T<:AbstractColor} = T((lhs * tosvector(rhs))...)
+Base.:*(lhs::T, rhs::Number) where {T<:AbstractColor} = rhs * lhs
+Base.:/(lhs::Number, rhs::T) where {T<:AbstractColor} = T([lhs/comp for comp ∈ tosvector(rhs)]...)
+Base.:/(lhs::T, rhs::Number) where {T<:AbstractColor} = T((tosvector(lhs) / rhs)...)
+
 # Cross-Type Arithmetics
 Base.:+(lhs::AbstractColor, rhs::AbstractColor) = +(promote(lhs, rhs)...)
 Base.:-(lhs::AbstractColor, rhs::AbstractColor) = -(promote(lhs, rhs)...)
@@ -104,3 +109,4 @@ const Blue    = NormColor(0, 0, 1)
 const Yellow  = NormColor(1, 1, 0)
 const Cyan    = NormColor(0, 1, 1)
 const Magenta = NormColor(1, 0, 1)
+const Alpha   = NormColor(0, 0, 0, 1)

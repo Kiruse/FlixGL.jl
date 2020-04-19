@@ -76,9 +76,20 @@ function test_mix()
     return true
 end
 
+function test_mix_semantic()
+    color = Red + Green
+    @assert isapprox(color.r, 1) && isapprox(color.g, 1) && isapprox(color.b, 0) && isapprox(color.a, 0)
+    
+    color = 0.25Red + Green / 2 + Blue + 0.5Alpha
+    @assert isapprox(color.r, 0.25) && isapprox(color.g, 0.5) && isapprox(color.b, 1) && isapprox(color.a, 0.5)
+    
+    return true
+end
+
 @testset "FlixGL.Color" begin
     @test test_construction()
     @test test_conversion()
     @test test_arithmetic()
     @test test_mix()
+    @test test_mix_semantic()
 end
