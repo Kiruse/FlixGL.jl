@@ -94,9 +94,9 @@ mix(first::AbstractColor, second::AbstractColor, alpha::AbstractFloat)  = mix(pr
 Base.write(io::IO, color::AbstractColor) = Base.write(io, collect(color))
 
 # zero & one functions
-Base.zero(color_t::Type{Color{F}}) where F = color_t(zeros(F, 4))
-Base.zero(color_t::Type{OpaqueColor{F}}) where F = color_t(zeros(F, 3))
-Base.one(color_t::Type{Color{F}}) where {F<:AbstractFloat} = color_t(ones(F, 4))
+Base.zero(color_t::Type{Color{F}}) where F = color_t(zeros(F, 4)...)
+Base.zero(color_t::Type{OpaqueColor{F}}) where F = color_t(zeros(F, 3)...)
+Base.one(color_t::Type{Color{F}}) where {F<:AbstractFloat} = color_t(ones(F, 4)...)
 Base.one(color_t::Type{Color{I}}) where {I<:Integer} = color_t([typemax(I) for i ∈ 1:4]...)
 Base.one(color_t::Type{OpaqueColor{F}}) where {F<:AbstractFloat} = color_t(ones(F, 3)...)
 Base.one(color_t::Type{OpaqueColor{I}}) where {I<:Integer} = color_t([typemax(I) for i ∈ 1:3]...)
