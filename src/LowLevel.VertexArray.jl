@@ -46,12 +46,12 @@ function Base.bind(va::VertexArray, buff::PrimitiveArrayBuffer{Float64}, locatio
     checkglerror()
 end
 
-function use(va)
+function use(va::VertexArray)
     ModernGL.glBindVertexArray(glid(va))
     checkglerror()
 end
 
-function destroy(va)
+function destroy(va::VertexArray)
     vas = [glid(va)]
     ModernGL.glDeleteVertexArrays(1, pointer[vas])
     checkglerror()

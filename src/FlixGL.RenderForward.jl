@@ -4,7 +4,12 @@ function render(::Type{ForwardRenderPipeline}, cam::Camera2D, ntts::AbstractArra
     for ntt ∈ ntts
         mat = materialof(ntt)
         vao = vaoof(ntt)
+        textures = texturesof(ntt)
         screentf = screentransform(ntt, cam, vpsize)
+        
+        for (idx, tex) ∈ enumerate(textures)
+            LowLevel.use(tex, unit=idx)
+        end
         
         LowLevel.use(programof(mat))
         LowLevel.uniform(0, asmatrix(screentf))

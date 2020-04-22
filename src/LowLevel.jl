@@ -1,29 +1,40 @@
 module LowLevel
+export AbstractGLResource
+export glid, gltype, use, destroy
 
 abstract type AbstractGLResource end
 glid(res::AbstractGLResource) = res.glid
-gltype(_...) = error("Not implemented")
-destroy(_...) = error("Not implemented")
-use(_...) = error("Not implemented")
 
 include("./LowLevel.Shader.jl")
 include("./LowLevel.Buffer.jl")
 include("./LowLevel.VertexArray.jl")
 include("./LowLevel.Uniform.jl")
+include("./LowLevel.Texture.jl")
 include("./LowLevel.Draw.jl")
 include("./LowLevel.ShaderUtil.jl")
+
+
+gltype(::Type{Int8})    = ModernGL.GL_BYTE
+gltype(::Type{UInt8})   = ModernGL.GL_UNSIGNED_BYTE
+gltype(::Type{Int16})   = ModernGL.GL_SHORT
+gltype(::Type{UInt16})  = ModernGL.GL_UNSIGNED_SHORT
+gltype(::Type{Int32})   = ModernGL.GL_INT
+gltype(::Type{UInt32})  = ModernGL.GL_UNSIGNED_INT
+gltype(::Type{Float16}) = ModernGL.GL_HALF_FLOAT
+gltype(::Type{Float32}) = ModernGL.GL_FLOAT
 
 
 function struct2bytes(data; fields = String[])
     error("Not implemented")
 end
 
-function bytes(data...)
-    values = Any[]
-    for val in data
-        push!(values, val)
+function bytes(data...; mapper = identity)
+    buff = IOBuffer()
+    for elem ∈ data
+        write(buff, mapper(elem))
     end
-    bytes(values)
+    seekstart(buff)
+    take!(buff)
 end
 
 function bytes(data::AbstractArray; mapper = identity)
@@ -33,6 +44,14 @@ function bytes(data::AbstractArray; mapper = identity)
     end
     seekstart(buff)
     return take!(buff)
+end
+
+function bytes(data::AbstractVector{UInt8})
+    return data
+end
+
+function bytes(data::AbstractArray{UInt8})
+    return data[:]
 end
 
 

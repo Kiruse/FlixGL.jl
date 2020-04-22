@@ -2,7 +2,7 @@ using StaticArrays
 
 export AbstractColor, Color, OpaqueColor, NormColor, NormColor3, ByteColor, ByteColor3
 export mix
-export Red, Green, Blue, Yellow, Cyan, Magenta
+export Red, Green, Blue, Yellow, Cyan, Magenta, White, Black, Alpha
 
 abstract type AbstractColor{T<:Number} end
 
@@ -90,8 +90,17 @@ mix(first::T, second::T, alpha::AbstractFloat) where {T<:AbstractColor} = (alpha
 mix(first::AbstractColor, second::AbstractColor, alpha::AbstractFloat)  = mix(promote(first, second)..., alpha)
 
 
+# Show colors
+Base.show(io::IO, color::ByteColor)   = write(io, "#$(bytes2hex([color.r, color.g, color.b, color.a]))")
+Base.show(io::IO, color::ByteColor3)  = write(io, "#$(bytes2hex([color.r, color.g, color.b]))")
+Base.show(io::IO, color::Color)       = show(io, convert(ByteColor, color))
+Base.show(io::IO, color::OpaqueColor) = show(io, convert(ByteColor3, color))
+
 # Write color to buffer
 Base.write(io::IO, color::AbstractColor) = Base.write(io, collect(color))
+
+# Transposing color has no effect
+Base.transpose(color::AbstractColor) = color
 
 # zero & one functions
 Base.zero(color_t::Type{Color{F}}) where F = color_t(zeros(F, 4)...)
@@ -109,4 +118,6 @@ const Blue    = NormColor(0, 0, 1)
 const Yellow  = NormColor(1, 1, 0)
 const Cyan    = NormColor(0, 1, 1)
 const Magenta = NormColor(1, 0, 1)
+const Black   = NormColor(0, 0, 0)
+const White   = NormColor(1, 1, 1)
 const Alpha   = NormColor(0, 0, 0, 1)

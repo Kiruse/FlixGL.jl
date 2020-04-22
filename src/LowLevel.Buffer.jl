@@ -39,16 +39,6 @@ struct VertexArrayObject <: AbstractGLResource glid::Integer end
 const GL_PRIMITIVE_INTEGERS = Union{Int8, UInt8, Int16, UInt16, Int32, UInt32}
 const GL_PRIMITIVE_DECIMALS = Union{Float16, Float32, Float64}
 const GL_PRIMITIVE_NUMERICS = Union{GL_PRIMITIVE_DECIMALS, GL_PRIMITIVE_INTEGERS}
-gltype(::Type{Float16}) = ModernGL.GL_HALF_FLOAT
-gltype(::Type{Float32}) = ModernGL.GL_FLOAT
-gltype(::Type{Float64}) = ModernGL.GL_DOUBLE
-#gltype(::Type{Fixed}) = ModernGL.GL_FIXED
-gltype(::Type{Int8})   = ModernGL.GL_BYTE
-gltype(::Type{UInt8})  = ModernGL.GL_UNSIGNED_BYTE
-gltype(::Type{Int16})  = ModernGL.GL_SHORT
-gltype(::Type{UInt16}) = ModernGL.GL_UNSIGNED_SHORT
-gltype(::Type{Int32})  = ModernGL.GL_INT
-gltype(::Type{UInt32}) = ModernGL.GL_UNSIGNED_INT
 
 struct ArrayBuffer        <: AbstractBuffer glid::Integer end
 struct ElementArrayBuffer <: AbstractBuffer glid::Integer end
