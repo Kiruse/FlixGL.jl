@@ -3,14 +3,12 @@ module FlixGL
 import GLFW
 using StaticArrays
 
-export use, destroy
+export use, destroy, upload
 
 const dir_assets  = "$(@__DIR__)/../assets"
 const dir_shaders = "$dir_assets/shaders"
 
-use(    _...) = error("Not implemented")
-destroy(_...) = error("Not implemented")
-upload( _...) = error("Not implemented")
+const Optional{T} = Union{Nothing, T}
 
 include("./LowLevel.jl")
 include("./Windows.jl")
@@ -22,6 +20,7 @@ include("./FlixGL.Vertex.jl")
 include("./FlixGL.Image.jl")
 include("./FlixGL.Texture.jl")
 include("./FlixGL.Material.jl")
+include("./FlixGL.UniformIdentifier.jl")
 include("./FlixGL.Camera.jl")
 include("./FlixGL.Entity.jl")
 include("./FlixGL.RenderPipeline.jl")

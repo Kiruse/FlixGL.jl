@@ -24,9 +24,6 @@ module TextureInternal
 using ..FlixGL
 import ..LowLevel
 
-extract_color_type(img::AbstractImage) = extract_color_type(typeof(pixels(img)))
-extract_color_type(::Type{<:AbstractArray{T}}) where {T<:AbstractColor} = T
-
 componentlayout(img::AbstractImage)    = componentlayout(extract_color_type(img))
 componentlayout(::Type{<:OpaqueColor}) = LowLevel.RGBLayout
 componentlayout(::Type{<:Color})       = LowLevel.RGBALayout

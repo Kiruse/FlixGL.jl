@@ -4,16 +4,12 @@ function render(::Type{ForwardRenderPipeline}, cam::Camera2D, ntts::AbstractArra
     for ntt ∈ ntts
         mat = materialof(ntt)
         vao = vaoof(ntt)
-        textures = texturesof(ntt)
         screentf = screentransform(ntt, cam, vpsize)
         
-        for (idx, tex) ∈ enumerate(textures)
-            LowLevel.use(tex, unit=idx)
-        end
-        
-        LowLevel.use(programof(mat))
-        LowLevel.uniform(0, asmatrix(screentf))
-        LowLevel.draw(vao.vao, drawmodeof(ntt), length(ntt.vertices))
+        use(mat)
+        # NOTE: Use of global Uniform Identifier is pointless as the uniform location depends on program.
+        LowLevel.uniform(LowLevel.finduniform(programof(mat), "uniScreenTransform"), asmatrix(screentf))
+        LowLevel.draw(internalvao(vao), drawmodeof(ntt), countverts(ntt))
     end
 end
 

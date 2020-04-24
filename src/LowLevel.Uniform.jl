@@ -3,9 +3,9 @@ using StaticArrays
 
 export uniform, finduniform
 
-uniform(location::Integer, floats::Vararg{<:AbstractFloat}) = UniformInternal.uniform_vararg(Symbol("glUniform$(length(floats))f"), location, Float32.(floats))
-uniform(location::Integer, ints::Vararg{<:Signed})          = UniformInternal.uniform_vararg(Symbol("glUniform$(length(ints))i"),   location, Int32.(ints))
-uniform(location::Integer, uints::Vararg{<:Unsigned})       = UniformInternal.uniform_vararg(Symbol("glUniform$(length(uints))ui"), location, UInt32.(uints))
+uniform(location::Integer, floats::Vararg{<:AbstractFloat}) = UniformInternal.uniform_vararg("f",  location, Float32.(floats))
+uniform(location::Integer, ints::Vararg{<:Signed})          = UniformInternal.uniform_vararg("i",  location, Int32.(ints))
+uniform(location::Integer, uints::Vararg{<:Unsigned})       = UniformInternal.uniform_vararg("ui", location, UInt32.(uints))
 
 uniform(location::Integer, floats::AbstractVector{<:AbstractFloat}) = UniformInternal.uniform_array('f', location, Float32.(floats))
 uniform(location::Integer, ints::AbstractVector{<:Signed})          = UniformInternal.uniform_array('i', location, Int32.(ints))
@@ -33,7 +33,7 @@ function uniform_vararg(typechars, location, values)
 end
 
 function uniform_array(typechars, location, array)
-    @assert length(array) <= 4
+    @assert length(array) ∈ 1:4
     fn = getproperty(ModernGL, Symbol("glUniform$(length(array))$(typechars)v"))
     fn(location, length(array), pointer(array))
     LowLevel.checkglerror()

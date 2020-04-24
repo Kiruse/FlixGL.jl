@@ -2,6 +2,8 @@ export AbstractMaterial
 
 abstract type AbstractMaterial end
 
+use(::AbstractMaterial) = nothing
+
 
 # Material -> low level Program
 

@@ -35,3 +35,15 @@ function getelement(mat::SMatrix{N, M}, col::Integer, row::Integer) where {N, M}
     @assert col > 0 && row > 0 && col <= N && row <= M
     col * M + row
 end
+
+
+"""
+Simple data structure comprised of 2 `Vector2`s representing the bottom left and top right corners of a rectangle.
+Used e.g. to address a subsection of a texture.
+"""
+struct Rect{T<:Number}
+    min::Vector2{T}
+    max::Vector2{T}
+end
+Rect{T}(minx, miny, maxx, maxy) where T = Rect{T}(Vector2{T}(T(minx), T(miny)), Vector2{T}(T(maxx), T(maxy)))
+Rect(minx, miny, maxx, maxy) = ((minx, miny, maxx, maxy) = promote(minx, miny, maxx, maxy); Rect(Vector2(minx, miny), Vector2(maxx, maxy)))
