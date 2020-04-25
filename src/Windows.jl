@@ -1,7 +1,8 @@
 import GLFW
+export DontCare, dontcare
 
-struct DontCareType end
-const DontCare = DontCareType()
+struct DontCare end
+const dontcare = DontCare()
 
 @enum FullscreenMode Windowed Fullscreen Borderless
 
@@ -10,13 +11,13 @@ active_wnd = nothing
 mutable struct WindowCreationArgs
     title::AbstractString
     monitor::Integer
-    width::Union{<:Integer, DontCareType}
-    height::Union{<:Integer, DontCareType}
+    width::Union{<:Integer, DontCare}
+    height::Union{<:Integer, DontCare}
     fullscreen::FullscreenMode
-    bits::Union{Tuple{<:Integer, <:Integer, <:Integer}, DontCareType}
-    refresh_rate::Union{<:Integer, DontCareType}
+    bits::Union{Tuple{<:Integer, <:Integer, <:Integer}, DontCare}
+    refresh_rate::Union{<:Integer, DontCare}
 end
-WindowCreationArgs() = WindowCreationArgs("<untitled window>", 1, DontCare, DontCare, Borderless, DontCare, DontCare)
+WindowCreationArgs() = WindowCreationArgs("<untitled window>", 1, dontcare, dontcare, Borderless, dontcare, dontcare)
 
 struct Window
     handle::GLFW.Window
@@ -37,7 +38,7 @@ function Window(args::WindowCreationArgs)
         args.refresh_rate = vidmode.refreshrate
     end
     
-    if typeof(args.bits) != DontCareType
+    if typeof(args.bits) != DontCare
         red, green, blue = args.bits
         GLFW.WindowHint(GLFW.RED_BITS,   red)
         GLFW.WindowHint(GLFW.GREEN_BITS, green)
@@ -47,7 +48,7 @@ function Window(args::WindowCreationArgs)
         GLFW.WindowHint(GLFW.GREEN_BITS, GLFW.DONT_CARE)
         GLFW.WindowHint(GLFW.BLUE_BITS,  GLFW.DONT_CARE)
     end
-    if typeof(args.refresh_rate) != DontCareType
+    if typeof(args.refresh_rate) != DontCare
         GLFW.WindowHint(GLFW.REFRESH_RATE, args.refresh_rate)
     else
         GLFW.WindowHint(GLFW.REFRESH_RATE, GLFW.DONT_CARE)
