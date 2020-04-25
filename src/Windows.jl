@@ -1,5 +1,8 @@
 import GLFW
+export Window, WindowCreationArgs
 export DontCare, dontcare
+export activewindow, flip
+export FullscreenMode, Windowed, Fullscreen, Borderless
 
 struct DontCare end
 const dontcare = DontCare()
@@ -17,7 +20,7 @@ mutable struct WindowCreationArgs
     bits::Union{Tuple{<:Integer, <:Integer, <:Integer}, DontCare}
     refresh_rate::Union{<:Integer, DontCare}
 end
-WindowCreationArgs() = WindowCreationArgs("<untitled window>", 1, dontcare, dontcare, Borderless, dontcare, dontcare)
+WindowCreationArgs(title::AbstractString = "<untitled window>") = WindowCreationArgs(title, 1, dontcare, dontcare, Borderless, dontcare, dontcare)
 
 struct Window
     handle::GLFW.Window
