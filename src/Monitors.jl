@@ -1,16 +1,20 @@
 import GLFW
 export Monitor, Monitors
-export getvideomode, getvideomodes, getphysicalsize, getdpi
+export getname, getvideomode, getvideomodes, getphysicalsize, getdpi
 
 struct Monitors end
 
 struct Monitor
     handle::GLFW.Monitor
+    index::UInt8
 end
+Monitor(idx::Integer) = Monitor(GLFW.GetMonitors()[idx], idx)
+
+Base.length(::Type{Monitors}) = length(GLFW.GetMonitors())
 
 function Base.iterate(::Type{Monitors})
     monitors = GLFW.GetMonitors()
-    Monitor(monitors[1]), (monitors, 1)
+    Monitor(monitors[1], 1), (monitors, 1)
 end
 
 function Base.iterate(::Type{Monitors}, state)
@@ -19,9 +23,11 @@ function Base.iterate(::Type{Monitors}, state)
     if idx > length(monitors)
         nothing
     else
-        Monitor(monitors[idx]), (monitors, idx)
+        Monitor(monitors[idx], idx), (monitors, idx)
     end
 end
+
+getname(monitor::Monitor) = GLFW.GetMonitorName(monitor.handle)
 
 getvideomode(monitor::Monitor)  = GLFW.GetVideoMode(monitor.handle)
 getvideomodes(monitor::Monitor) = GLFW.GetVideoModes(monitor.handle)
