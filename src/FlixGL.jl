@@ -11,6 +11,7 @@ const dir_shaders = "$dir_assets/shaders"
 const Optional{T} = Union{Nothing, T}
 
 include("./LowLevel.jl")
+include("./Monitors.jl")
 include("./Windows.jl")
 include("./FlixGL.Errors.jl")
 include("./FlixGL.Color.jl")
