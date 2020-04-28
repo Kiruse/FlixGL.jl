@@ -1,4 +1,5 @@
 export curry, hflip!, vflip!
+export mm2in, in2mm
 
 curry(fn, curryargs...; kwcurryargs...) = (moreargs...; kwargs...) -> fn(curryargs..., moreargs...; kwcurryargs..., kwargs...)
 
@@ -29,3 +30,6 @@ function vflip!(arr::AbstractArray)
     end
     arr
 end
+
+mm2in(mm::Number) = 0.03937mm
+in2mm(in::Number) = in / 0.03937

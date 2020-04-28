@@ -33,5 +33,5 @@ getvideomode(monitor::Monitor)  = GLFW.GetVideoMode(monitor.handle)
 getvideomodes(monitor::Monitor) = GLFW.GetVideoModes(monitor.handle)
 
 getphysicalsize(monitor::Monitor) = (size = GLFW.GetMonitorPhysicalSize(monitor.handle); (size.width, size.height))
-getdpi(monitor::Monitor, videomode::GLFW.VidMode) = (videomode.width, videomode.height) .÷ getphysicalsize(monitor)
+getdpi(monitor::Monitor, videomode::GLFW.VidMode) = round.(Int, (videomode.width, videomode.height) ./ mm2in.(getphysicalsize(monitor)))
 getdpi(monitor::Monitor) = getdpi(monitor, getvideomode(monitor))
