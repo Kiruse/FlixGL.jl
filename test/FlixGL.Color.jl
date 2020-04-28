@@ -1,47 +1,94 @@
 include("../src/FlixGL.Color.jl")
 
+function isapproxcoll(arr1, arr2; atol::Real=0)
+    @assert length(arr1) == length(arr2)
+    
+    for i ∈ 1:length(arr1)
+        if !isapprox(arr1[i], arr2[i], atol=atol)
+            return false
+        end
+    end
+    return true
+end
+
 using Test
 
 function test_construction()
-    color = Color(0x042069FF)
-    @assert color.r == 0x04 && color.g == 0x20 && color.b == 0x69 && color.a == 0xFF
+    color = ByteColor(0x042069FF)
+    @assert collect(color) == [0x04, 0x20, 0x69, 0xFF]
     
-    color = Color(1, 0, 0, 0.1)
-    @assert isapprox(color.r, 1) && isapprox(color.g, 0) && isapprox(color.b, 0) && isapprox(color.a, 0.1)
+    color = NormColor(1, 0, 0, 0.1)
+    @assert isapproxcoll(collect(color), (1, 0, 0, 0.1))
     
-    color = OpaqueColor(0x042069)
-    @assert color.r == 0x04 && color.g == 0x20 && color.b == 0x69
+    color = ByteColor3(0x042069)
+    @assert collect(color) == [0x04, 0x20, 0x69]
     
-    color = OpaqueColor(0.4, 0.2, 0.0)
-    @assert isapprox(color.r, 0.4) && isapprox(color.g, 0.2) && isapprox(color.b, 0)
+    color = NormColor3(0.4, 0.2, 0.0)
+    @assert isapproxcoll(collect(color), (0.4, 0.2, 0))
+    
+    color = ByteGrayscaleA(0x55, 0xa0)
+    @assert collect(color) == [0x55, 0xa0]
+    
+    color = NormGrayscaleA(0.5, 0.75)
+    @assert isapproxcoll(collect(color), (0.5, 0.75))
+    
+    color = ByteGrayscale(0x55)
+    @assert color.v == 0x55
+    
+    color = NormGrayscale(0.5)
+    @assert isapproxcoll(color.v, 0.5)
     
     return true
 end
 
 function test_conversion()
-    # Convert between numeric data types
-    color = convert(Color{Float32}, Color(0x042069FF))
-    @assert isapprox(color.r, 0.015, atol=1e-3) && isapprox(color.g, 0.125, atol=1e-3) && isapprox(color.b, 0.411, atol=1e-3) && isapprox(color.a, 1, atol=1e-3)
+    # Convert between integer data types
+    color = convert(Color{Int32}, Color(0x042069FF))
+    @assert collect(color) == [33686017, 269488143, 884257972, 2147483647]
     
-    color = convert(OpaqueColor{Float32}, OpaqueColor(0x042069))
-    @assert isapprox(color.r, 0.015, atol=1e-3) && isapprox(color.g, 0.125, atol=1e-3) && isapprox(color.b, 0.411, atol=1e-3)
+    color = convert(OpaqueColor{Int32}, OpaqueColor(0x042069))
+    @assert collect(color) == [33686017, 269488143, 884257972]
     
-    color = convert(Color{UInt8}, Color(0.1, 0.2, 0.3, 0.4))
-    @assert color.r == 25 && color.g == 51 && color.b == 76 && color.a == 102
+    # Convert between decimal data types
+    color = convert(Color{Float16}, Color(0.1, 0.2, 0.3, 0.4))
+    @assert isapproxcoll(collect(color), (0.1, 0.2, 0.3, 0.4))
     
-    color = convert(OpaqueColor{UInt8}, OpaqueColor(0.1, 0.2, 0.3))
-    @assert color.r == 25 && color.g == 51 && color.b == 76
+    color = convert(OpaqueColor{Float16}, OpaqueColor(0.1, 0.2, 0.3))
+    @assert isapproxcoll(collect(color), (0.1, 0.2, 0.3))
     
-    # Convert from 3 comps to 4 comps & vice versa
+    # Convert RGB->RGBA
     color = convert(Color{UInt8}, OpaqueColor{UInt8}(4, 20, 69))
-    @assert color.r == 4 && color.g == 20 && color.b == 69 && color.a == 0
+    @assert collect(color) == [4, 20, 69, 0]
     
+    # Convert RGBA->RGB
     color = convert(OpaqueColor{UInt8}, Color{UInt8}(4, 20, 69, 0))
-    @assert color.r == 4 && color.g == 20 && color.b == 69
+    @assert collect(color) == [4, 20, 69]
     
-    # Convert from 3 comps to 4 with mixed underlying numeric types
+    # Convert Gray(A)->RGBA
+    color = convert(Color{UInt8}, ByteGrayscaleA(0xA0, 0x66))
+    @assert collect(color) == [0xA0, 0xA0, 0xA0, 0x66]
+    
+    color = convert(Color{UInt8}, ByteGrayscale(0xA0))
+    @assert collect(color) == [0xA0, 0xA0, 0xA0, 0x0]
+    
+    # Convert Gray(A)->RGB
+    color = convert(OpaqueColor{UInt8}, ByteGrayscaleA(0xA0, 0x66))
+    @assert collect(color) == [0xA0, 0xA0, 0xA0]
+    
+    color = convert(OpaqueColor{UInt8}, ByteGrayscale(0xA0))
+    @assert collect(color) == [0xA0, 0xA0, 0xA0]
+    
+    # Convert RGB->RGBA w/ mixed channel types
     color = convert(Color{Float32}, OpaqueColor(0xFF8844))
-    @assert isapprox(color.r, 1) && isapprox(color.g, 0.533, atol=1e-3) && isapprox(color.b, 0.266, atol=1e-3) && isapprox(color.a, 0)
+    @assert isapproxcoll(collect(color), (1, 0.533, 0.266, 0), atol=1e-3)
+    
+    # Convert RGBA->RGB w/ mixed channel types
+    color = convert(OpaqueColor{Float32}, Color(0xFF884422))
+    @assert isapproxcoll(collect(color), (1, 0.533, 0.266), atol=1e-3)
+    
+    # Convert ByteGrayscale to NormGrayscale
+    color = convert(NormGrayscale, ByteGrayscale(0xA0))
+    @assert isapprox(color.v, 0.625, atol=1e-2)
     
     return true
 end
