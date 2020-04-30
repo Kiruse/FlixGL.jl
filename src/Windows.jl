@@ -64,7 +64,7 @@ function Window(args::WindowCreationArgs)
     GLFW.WindowHint(GLFW.CONTEXT_VERSION_MINOR, 3)
     #GLFW.WindowHint(GLFW.OPENGL_DEBUG_CONTEXT, GLFW.TRUE)
     
-    if monitor == nothing
+    if monitor == nothing || args.fullscreen == Windowed
         Window(GLFW.CreateWindow(args.width, args.height, args.title), monitor)
     else
         Window(GLFW.CreateWindow(args.width, args.height, args.title, monitor.handle), monitor)

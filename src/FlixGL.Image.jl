@@ -1,6 +1,7 @@
 using CodecZlib
 
 export AbstractImage, AbstractImageFormat
+export Image2D
 export decode, load_image, pixels, extract_color_type
 
 abstract type AbstractImage end
