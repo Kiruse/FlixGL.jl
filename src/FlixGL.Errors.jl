@@ -1,12 +1,12 @@
 export DecoderError
 
 struct DecoderError <: Exception
-    msg::Union{AbstractString, Missing}
+    msg::Optional{AbstractString}
 end
-DecoderError() = DecoderError(missing)
+DecoderError() = DecoderError(nothing)
 
 function Base.show(io::IO, err::DecoderError)
-    if err.msg == missing
+    if err.msg == nothing
         write(io, "Decoder error")
     else
         write(io, "Decoder error: $(err.msg)")
