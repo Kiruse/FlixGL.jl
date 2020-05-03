@@ -71,7 +71,7 @@ function texture_upload(tex::Texture2D, img::AbstractVector{UInt8}, width::Integ
     texture_upload_internal(tex, img, width, height, level-1, complayout, gltexformat(complayout), comptype)
 end
 
-function texture_upload_internal(tex::Texture2D, data::AbstractArray{UInt8}, width::Integer, height::Integer, level::Integer, complayout::Type{<:AbstractComponentLayout}, glformat, comptype::Type{<:Number})
+function texture_upload_internal(tex::Texture2D, data::AbstractVector{UInt8}, width::Integer, height::Integer, level::Integer, complayout::Type{<:AbstractComponentLayout}, glformat, comptype::Type{<:Number})
     LowLevel.use(tex)
     ModernGL.glTexImage2D(gltype(typeof(tex)), level, glformat, width, height, 0, gltype(complayout), gltype(comptype), pointer(data))
     checkglerror()
