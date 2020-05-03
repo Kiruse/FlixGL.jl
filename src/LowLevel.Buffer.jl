@@ -95,8 +95,8 @@ end
 function buffer_update_internal(buff::AbstractBuffer, data::AbstractArray; offset::Integer = 0, mapper)
     byts = bytes(data, mapper=mapper)
     use(buff)
-    ModernGL.glBufferSubData(gltype(typeof(buff)), Ptr{Int32}(offset), Ptr{Uint32}(sizeof(byts)), pointer(byts))
-    checkerror()
+    ModernGL.glBufferSubData(gltype(typeof(buff)), offset, sizeof(byts), pointer(byts))
+    checkglerror()
 end
 
 function buffer_download!(data::AbstractArray{UInt8}, buff::AbstractBuffer, size::Integer; offset::Integer = 0)

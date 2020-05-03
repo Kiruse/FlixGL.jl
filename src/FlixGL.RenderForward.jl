@@ -1,6 +1,18 @@
+using LinearAlgebra
+
 function render(::Type{ForwardRenderPipeline}, cam::Camera2D, ntts::AbstractArray{<:AbstractEntity2D})
-    vpsize = size(activewindow()) .÷ 2
+    vpsize = size(activewindow()) ./ 2
     
+    # Render background sprite
+    bgsprite = getbgsprite()
+    mat = materialof(bgsprite)
+    vao = vaoof(bgsprite)
+    
+    use(mat)
+    LowLevel.uniform(LowLevel.finduniform(programof(mat), "uniScreenTransform"), Matrix3{Float32}(I))
+    LowLevel.draw(internalvao(vao), drawmodeof(bgsprite), countverts(bgsprite))
+    
+    # Render given entities
     for ntt ∈ ntts
         mat = materialof(ntt)
         vao = vaoof(ntt)

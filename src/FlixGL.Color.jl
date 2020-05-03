@@ -10,7 +10,7 @@ using Printf
 export AbstractColor, Color, OpaqueColor, GrayscaleColor, OpaqueGrayscaleColor
 export NormColor, NormColor3, ByteColor, ByteColor3, NormGrayscaleA, NormGrayscale, ByteGrayscaleA, ByteGrayscale
 export mix
-export Red, Green, Blue, Yellow, Cyan, Magenta, White, Black, Alpha
+export Red, Green, Blue, Yellow, Cyan, Magenta, White, Black, Alpha, Red3, Green3, Blue3, Yellow3, Cyan3, Magenta3, White3, Black3
 
 abstract type AbstractColor{T<:Number} end
 
@@ -212,12 +212,20 @@ Base.one(color_t::Type{<:AbstractColor{I}}) where {I<:Integer} = color_t((typema
 
 
 # Constant colors
-const Red     = NormColor(1, 0, 0)
-const Green   = NormColor(0, 1, 0)
-const Blue    = NormColor(0, 0, 1)
-const Yellow  = NormColor(1, 1, 0)
-const Cyan    = NormColor(0, 1, 1)
-const Magenta = NormColor(1, 0, 1)
-const Black   = NormColor(0, 0, 0)
-const White   = NormColor(1, 1, 1)
-const Alpha   = NormColor(0, 0, 0, 1)
+const Red      = NormColor(1, 0, 0)
+const Green    = NormColor(0, 1, 0)
+const Blue     = NormColor(0, 0, 1)
+const Yellow   = NormColor(1, 1, 0)
+const Cyan     = NormColor(0, 1, 1)
+const Magenta  = NormColor(1, 0, 1)
+const Black    = NormColor(0, 0, 0)
+const White    = NormColor(1, 1, 1)
+const Alpha    = NormColor(0, 0, 0, 1)
+const Red3     = NormColor3(1, 0, 0)
+const Green3   = NormColor3(0, 1, 0)
+const Blue3    = NormColor3(0, 0, 1)
+const Yellow3  = NormColor3(1, 1, 0)
+const Cyan3    = NormColor3(0, 1, 1)
+const Magenta3 = NormColor3(1, 0, 1)
+const Black3   = NormColor3(0, 0, 0)
+const White3   = NormColor3(1, 1, 1)

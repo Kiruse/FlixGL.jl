@@ -1,7 +1,8 @@
+import ModernGL
 import GLFW
 export Window, WindowCreationArgs
 export DontCare, dontcare
-export activewindow, resize!, flip, setvsync, clearvsync, pollevents
+export initwindow, activewindow, resize!, flip, setvsync, clearvsync, enabletransparency, disabletransparency, wantsclose, pollevents
 export setfullscreen!, clearfullscreen!, isfullscreen, setmonitor!, getmonitor
 export FullscreenMode, Windowed, Fullscreen, Borderless
 
@@ -101,6 +102,25 @@ getmonitor(wnd::Window) = wnd.monitor
 
 setvsync(interval::Integer = 1) = GLFW.SwapInterval(interval)
 clearvsync() = setvsync(0)
-flip(wnd::Window) = GLFW.SwapBuffers(wnd.handle)
+flip() = GLFW.SwapBuffers(activewindow().handle)
 
+function enabletransparency()
+    ModernGL.glEnable(ModernGL.GL_BLEND)
+    ModernGL.glBlendFunc(ModernGL.GL_SRC_ALPHA, ModernGL.GL_ONE_MINUS_SRC_ALPHA)
+end
+function disabletransparency()
+    ModernGL.glDisable(ModernGL.GL_BLEND)
+end
+
+"""
+Initializes the currently active window. Sets VSync to 1, enables transparency and sets
+background color to black.
+"""
+function initwindow()
+    setvsync()
+    enabletransparency()
+    setbgcolor(Black3)
+end
+
+wantsclose() = GLFW.WindowShouldClose(activewindow().handle)
 pollevents() = GLFW.PollEvents()

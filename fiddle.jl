@@ -1,24 +1,19 @@
-import Base.Filesystem
-const PROJDIR = Filesystem.abspath(@__DIR__)
-const SHADERDIR = "$(PROJDIR)/assets/shaders"
-push!(LOAD_PATH, PROJDIR)
+push!(LOAD_PATH, @__DIR__)
 
 using FlixGL
-import GLFW
-import ModernGL
 
 wnd = FlixGL.Window(title="FlixGL Fiddle")
-
 FlixGL.use(wnd)
-setvsync()
+initwindow()
+setbgcolor(Cyan3)
 
 cam = Camera2D()
 img = load_image(PNGImageFormat, "./assets/textures/test.png")
 tex = texture(img)
 sprite = Sprite2D(200, 200, tex)
 
-while !GLFW.WindowShouldClose(wnd.handle)
+while !wantsclose()
     pollevents()
     render(ForwardRenderPipeline, cam, [sprite])
-    FlixGL.flip(wnd)
+    FlixGL.flip()
 end
