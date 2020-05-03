@@ -1,4 +1,5 @@
 using ModernGL
+using Printf
 
 export AbstractTexture, Texture2D
 export AbstractComponentLayout, RLayout, RGLayout, RGBLayout, BGRLayout, RGBALayout, BGRALayout, DepthLayout, DepthStencilLayout
@@ -30,8 +31,8 @@ gltype(::Type{BGRALayout})  = ModernGL.GL_BGRA
 gltype(::Type{DepthLayout}) = ModernGL.GL_DEPTH_COMPONENT
 gltype(::Type{DepthStencilLayout}) = ModernGL.GL_DEPTH_STENCIL
 gltexformat(layout_t::Type{<:AbstractComponentLayout}) = gltype(layout_t)
-gltexformat(::Union{Type{RGBLayout},  Type{BGRLayout}})  = gltype(RGBLayout)
-gltexformat(::Union{Type{RGBALayout}, Type{BGRALayout}}) = gltype(RGBALayout)
+gltexformat(::Type{BGRLayout})  = gltype(RGBLayout)
+gltexformat(::Type{BGRALayout}) = gltype(RGBALayout)
 
 
 struct Texture2D <: AbstractTexture
@@ -71,7 +72,8 @@ function texture_upload(tex::Texture2D, img::AbstractVector{UInt8}, width::Integ
     texture_upload_internal(tex, img, width, height, level-1, complayout, gltexformat(complayout), comptype)
 end
 
-function texture_upload_internal(tex::Texture2D, data::AbstractVector{UInt8}, width::Integer, height::Integer, level::Integer, complayout::Type{<:AbstractComponentLayout}, glformat, comptype::Type{<:Number})
+# TODO: Currently only supports float and half decimals. Support integers as well.
+function texture_upload_internal(tex::Texture2D, data::AbstractVector{UInt8}, width::Integer, height::Integer, level::Integer, complayout::Type{<:AbstractComponentLayout}, glformat, comptype::Type{<:AbstractFloat})
     LowLevel.use(tex)
     ModernGL.glTexImage2D(gltype(typeof(tex)), level, glformat, width, height, 0, gltype(complayout), gltype(comptype), pointer(data))
     checkglerror()
