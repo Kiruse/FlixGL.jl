@@ -53,6 +53,10 @@ gltype(::Type{UniformBuffer})      = ModernGL.GL_UNIFORM_BUFFER
 gltype(::Type{PrimitiveArrayBuffer{T}}) where T = ModernGL.GL_ARRAY_BUFFER
 
 
+function buffer(data::AbstractVector{T}, freq::Type{<:BufferUsage.AbstractFrequency}, nature::Type{<:BufferUsage.AbstractNature}; mapper = identity) where {T<:GL_PRIMITIVE_NUMERICS}
+    buffer(PrimitiveArrayBuffer{T}, data, freq, nature, mapper=mapper)
+end
+
 function buffer(buffer_t::Type{<:AbstractBuffer}, data::AbstractArray, freq::Type{<:BufferUsage.AbstractFrequency}, nature::Type{<:BufferUsage.AbstractNature}; mapper = identity)
     buff = buffer(buffer_t)
     use(buff)
@@ -84,7 +88,7 @@ function buffer_init_internal(buff::AbstractBuffer, data::AbstractArray, freq::T
     checkglerror()
 end
 
-function buffer_update(buff::AbstractBuffer, data::AbstractArray; offset::Integer = 0, mapper)
+function buffer_update(buff::AbstractBuffer, data::AbstractArray; offset::Integer = 0, mapper = identity)
     buffer_update_internal(buff, data, offset=offset, mapper=mapper)
 end
 
