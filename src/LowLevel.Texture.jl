@@ -1,5 +1,4 @@
 using ModernGL
-using Printf
 
 export AbstractTexture, Texture2D
 export AbstractComponentLayout, RLayout, RGLayout, RGBLayout, BGRLayout, RGBALayout, BGRALayout, DepthLayout, DepthStencilLayout
