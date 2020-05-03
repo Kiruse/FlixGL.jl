@@ -20,9 +20,9 @@ function destroy(vao::Sprite2DVAO)
 end
 
 
-struct Sprite2DMaterial <: AbstractMaterial
+mutable struct Sprite2DMaterial <: AbstractMaterial
     texture::AbstractTexture
-    taint::Color
+    taint::NormColor
 end
 
 function programof(::Type{Sprite2DMaterial})
