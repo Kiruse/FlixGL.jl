@@ -14,9 +14,9 @@ struct Sprite2DVAO <: AbstractVertexArrayData
 end
 
 function destroy(vao::Sprite2DVAO)
-    LowLevel.destroy(internal)
-    LowLevel.destroy(vbo_coords)
-    LowLevel.destroy(vbo_uvs)
+    LowLevel.destroy(vao.internal)
+    LowLevel.destroy(vao.vbo_coords)
+    LowLevel.destroy(vao.vbo_uvs)
 end
 
 
