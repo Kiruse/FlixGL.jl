@@ -50,4 +50,4 @@ function uniform_matrix(location, mat::SMatrix{N, M}, transpose::Bool) where {N,
     fn(location, 1, transpose, pointer(collect(mat)))
     LowLevel.checkglerror()
 end
-end
+end # module UniformInternal

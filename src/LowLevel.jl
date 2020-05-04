@@ -13,6 +13,7 @@ include("./LowLevel.Texture.jl")
 include("./LowLevel.Draw.jl")
 include("./LowLevel.ShaderUtil.jl")
 include("./LowLevel.BufferUtil.jl")
+include("./LowLevel.TextureUtil.jl")
 
 
 gltype(::Type{Int8})    = ModernGL.GL_BYTE

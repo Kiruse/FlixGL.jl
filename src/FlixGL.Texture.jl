@@ -1,9 +1,11 @@
 ######################################################################
 # Provides wrapper classes for the LowLevel counterpieces in order to
 # integrate them with the higher level Image classes.
+import .LowLevel: AbstractTextureWrap, RepeatWrap, RepeatMirroredWrap, ClampToEdgeWrap, ClampToBorderWrap
 
 export AbstractTexture, Texture2D
-export texture
+export AbstractTextureWrap, RepeatWrap, RepeatMirroredWrap, ClampToEdgeWrap, ClampToBorderWrap
+export texture, wrapping!
 
 abstract type AbstractTexture end
 
@@ -15,6 +17,11 @@ Base.size(tex::AbstractTexture) = size(tex.internal)
 function texture(img::Image2D)
     width, height = size(img)
     Texture2D(LowLevel.texture(LowLevel.Texture2D, LowLevel.bytes(img), width, height, TextureInternal.componentlayout(img), TextureInternal.componenttype(img), generate_mipmaps=true))
+end
+
+function wrapping!(tex::Texture2D, uwrap::Type{<:AbstractTextureWrap}, vwrap::Type{<:AbstractTextureWrap}; border::NormColor = Black+Alpha)
+    LowLevel.wrapping!(tex.internal, uwrap, vwrap, border=collect(border))
+    tex
 end
 
 # TODO: DepthTexture and DepthStencilTexture structs
