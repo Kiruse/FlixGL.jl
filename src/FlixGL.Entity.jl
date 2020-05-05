@@ -1,4 +1,16 @@
 export AbstractEntity, AbstractEntity2D
+export @proxyentity
+
+macro proxyentity(type, prop)
+    esc(quote
+        vertsof(ntt::$type)     = vertsof(ntt.$prop)
+        countverts(ntt::$type)  = countverts(ntt.$prop)
+        vaoof(ntt::$type)       = vaoof(ntt.$prop)
+        transformof(ntt::$type) = transformof(ntt.$prop)
+        materialof(ntt::$type)  = materialof(ntt.$prop)
+        drawmodeof(ntt::$type)  = drawmodeof(ntt.$prop)
+    end)
+end
 
 abstract type AbstractEntity end
 abstract type AbstractEntity2D <: AbstractEntity end
