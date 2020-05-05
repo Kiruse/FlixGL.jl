@@ -123,4 +123,3 @@ function initwindow()
 end
 
 wantsclose() = GLFW.WindowShouldClose(activewindow().handle)
-pollevents() = GLFW.PollEvents()
