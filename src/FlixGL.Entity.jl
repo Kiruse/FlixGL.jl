@@ -35,4 +35,7 @@ function destroy(ntt::AbstractEntity)
 end
 
 
+parent!(child::AbstractEntity, parent::AbstractEntity) = parent!(transformof(child), transformof(parent))
+deparent!(ntt::AbstractEntity) = deparent!(transformof(ntt))
+
 include("./FlixGL.Entity.Sprite.jl")

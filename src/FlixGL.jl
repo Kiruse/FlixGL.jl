@@ -6,6 +6,11 @@ using VPEWorlds
 
 export use, destroy, upload
 
+# Forward VPEWorlds exports
+export Vector2, Vector3, Vector4, Matrix2, Matrix3, Matrix4
+export World, Transform2D
+export translate!, rotate!, scale!, update, idmat, obj2world, world2obj
+
 const dir_assets  = "$(@__DIR__)/../assets"
 const dir_shaders = "$dir_assets/shaders"
 

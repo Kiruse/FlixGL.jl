@@ -1,7 +1,6 @@
 push!(LOAD_PATH, @__DIR__)
 
 using FlixGL
-using VPEWorlds
 using GLFW
 
 wnd = FlixGL.Window(title="FlixGL Fiddle", fullscreen=Windowed, width=800, height=600)
