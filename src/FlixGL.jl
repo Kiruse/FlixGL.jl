@@ -2,6 +2,7 @@ module FlixGL
 
 import GLFW
 using StaticArrays
+using VPEWorlds
 
 export use, destroy, upload
 
@@ -15,8 +16,7 @@ include("./Monitors.jl")
 include("./Windows.jl")
 include("./FlixGL.Errors.jl")
 include("./FlixGL.Color.jl")
-include("./FlixGL.Matrix.jl")
-include("./FlixGL.Transform.jl")
+include("./FlixGL.Misc.jl")
 include("./FlixGL.Vertex.jl")
 include("./FlixGL.Image.jl")
 include("./FlixGL.Texture.jl")
@@ -26,7 +26,6 @@ include("./FlixGL.Camera.jl")
 include("./FlixGL.Entity.jl")
 include("./FlixGL.RenderPipeline.jl")
 include("./FlixGL.RenderForward.jl")
-include("./FlixGL.Misc.jl")
 
 function __init__()
     

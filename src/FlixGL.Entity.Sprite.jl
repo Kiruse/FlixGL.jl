@@ -45,9 +45,15 @@ struct Sprite2D <: AbstractEntity2D
     vao::Sprite2DVAO
     transform::Transform2D
     material::AbstractMaterial
+    
+    function Sprite2D(vao, transform, material)
+        inst = new(vao, transform, material)
+        transform.customdata = inst
+        inst
+    end
 end
 
-function Sprite2D(width::Integer, height::Integer, tex::Texture2D; frame::Rect = Rect{Float32}(0, 0, 1, 1), taint::Color = White+Alpha, static::Bool = true, transform::Transform2D = Transform2D())
+function Sprite2D(width::Integer, height::Integer, tex::Texture2D; frame::Rect = Rect{Float32}(0, 0, 1, 1), taint::Color = White+Alpha, static::Bool = true, transform::Transform2D = Transform2D{Float64}())
     halfwidth  = width/2
     halfheight = height/2
     verts = [

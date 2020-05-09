@@ -23,6 +23,12 @@ transformof(ntt::AbstractEntity) = ntt.transform
 materialof( ntt::AbstractEntity) = ntt.material
 drawmodeof( ntt::AbstractEntity) = LowLevel.TrianglesDrawMode
 
+VPEWorlds.translate!(ntt::AbstractEntity, offset)   = translate!(transformof(ntt), offset)
+VPEWorlds.rotate!(   ntt::AbstractEntity, rotation) = rotate!(   transformof(ntt), rotation)
+VPEWorlds.scale!(    ntt::AbstractEntity, scale)    = scale!(    transformof(ntt), scale)
+VPEWorlds.obj2world(ntt::AbstractEntity) = obj2world(transformof(ntt))
+VPEWorlds.world2obj(ntt::AbstractEntity) = world2obj(transformof(ntt))
+
 # Free OpenGL resources at will
 function destroy(ntt::AbstractEntity)
     delete(vaoof(ntt))
