@@ -27,6 +27,12 @@ WindowCreationArgs(title::AbstractString = "<untitled window>") = WindowCreation
 mutable struct Window
     handle::GLFW.Window
     monitor::Optional{Monitor}
+    
+    function Window(handle, monitor)
+        wnd = new(handle, monitor)
+        GLFW.SetWindowSizeCallback(handle, curry(wndresizecallback, wnd))
+        wnd
+    end
 end
 
 function Window(args::WindowCreationArgs)
@@ -77,6 +83,10 @@ end
 
 Base.size(wnd::Window) = (dims = GLFW.GetWindowSize(wnd.handle); (dims.width, dims.height))
 resize!(wnd::Window, width::Integer, height::Integer) = (GLFW.SetWindowSize(wnd.handle, width, height); wnd)
+
+function wndresizecallback(wnd, _, width, height)
+    ModernGL.glViewport(0, 0, width, height)
+end
 
 activewindow() = active_wnd
 use(wnd::Window) = (global active_wnd; active_wnd = wnd; GLFW.MakeContextCurrent(wnd.handle))
