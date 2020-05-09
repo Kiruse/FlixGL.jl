@@ -1,9 +1,14 @@
 export AbstractRenderPipeline, ForwardRenderPipeline, DeferredRenderPipeline
-export render, setbgcolor, getbgcolor
+export AbstractRenderSpace, WorldRenderSpace, ScreenRenderSpace
+export render, render_background, setbgcolor, getbgcolor
 
 abstract type AbstractRenderPipeline end
 struct ForwardRenderPipeline <: AbstractRenderPipeline end
 struct DeferredRenderPipeline <: AbstractRenderPipeline end
+
+abstract type AbstractRenderSpace end
+struct WorldRenderSpace <: AbstractRenderSpace end
+struct ScreenRenderSpace <: AbstractRenderSpace end
 
 
 function setbgcolor(color::NormColor3)

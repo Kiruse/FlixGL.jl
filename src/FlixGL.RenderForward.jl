@@ -1,16 +1,28 @@
 using LinearAlgebra
 
-function render(::Type{ForwardRenderPipeline}, cam::Camera2D, ntts::AbstractArray{<:AbstractEntity2D})
-    vphalfsize = size(activewindow()) ./ 2
+"""
+Render a simple background color. This differs from the clear color as it allows transparency on objects above nothing else.
+"""
+function render_background(::Type{ForwardRenderPipeline})
+    render(ForwardRenderPipeline, ScreenRenderSpace, getbgsprite())
     
-    # Render background sprite
-    bgsprite = getbgsprite()
-    mat = materialof(bgsprite)
-    vao = vaoof(bgsprite)
+end
+
+function render(::Type{ForwardRenderPipeline}, ::Type{ScreenRenderSpace}, ntts)
+    foreach(ntt->render(ForwardRenderPipeline, ScreenRenderSpace, ntt))
+end
+
+function render(::Type{ForwardRenderPipeline}, ::Type{ScreenRenderSpace}, ntt::AbstractEntity)
+    mat = materialof(ntt)
+    vao = vaoof(ntt)
     
     use(mat)
-    LowLevel.uniform(LowLevel.finduniform(programof(mat), "uniScreenTransform"), Matrix3{Float32}(I))
-    LowLevel.draw(internalvao(vao), drawmodeof(bgsprite), countverts(bgsprite))
+    LowLevel.uniform(LowLevel.finduniform(programof(mat), "uniScreenTransform"), idmat(Matrix3{Float32}))
+    LowLevel.draw(internalvao(vao), drawmodeof(ntt), countverts(ntt))
+end
+
+function render(::Type{ForwardRenderPipeline}, ::Type{WorldRenderSpace}, cam::Camera2D, ntts)
+    vphalfsize = size(activewindow()) ./ 2
     
     # Render given entities
     for ntt ∈ ntts

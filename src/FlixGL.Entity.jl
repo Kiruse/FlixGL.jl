@@ -35,7 +35,10 @@ function destroy(ntt::AbstractEntity)
 end
 
 
-parent!(child::AbstractEntity, parent::AbstractEntity) = parent!(transformof(child), transformof(parent))
-deparent!(ntt::AbstractEntity) = deparent!(transformof(ntt))
+VPEWorlds.parent!(child::AbstractEntity, parent::AbstractEntity) = parent!(transformof(child), transformof(parent))
+VPEWorlds.deparent!(ntt::AbstractEntity) = deparent!(transformof(ntt))
+parentof(child::AbstractEntity) = getcustomdata(AbstractEntity, transformof(ntt))
+Base.push!(world::World, ntt::AbstractEntity) = push!(world, transformof(ntt))
+Base.delete!(world::World, ntt::AbstractEntity) = delete!(world, transformof(ntt))
 
 include("./FlixGL.Entity.Sprite.jl")
