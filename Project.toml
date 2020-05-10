@@ -1,7 +1,7 @@
 name = "FlixGL"
 uuid = "bc95435f-373a-49fe-86c5-1d6f8d4e4aed"
 authors = ["Kiruse <neurokiruse@outlook.com>"]
-version = "0.1.16"
+version = "0.1.17"
 
 [deps]
 CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"

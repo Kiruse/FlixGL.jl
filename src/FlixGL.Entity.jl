@@ -1,5 +1,6 @@
 export AbstractEntity, AbstractEntity2D
 export @proxyentity
+export parentof, childrenof
 
 macro proxyentity(type, prop)
     esc(quote
@@ -38,6 +39,8 @@ end
 VPEWorlds.parent!(child::AbstractEntity, parent::AbstractEntity) = parent!(transformof(child), transformof(parent))
 VPEWorlds.deparent!(ntt::AbstractEntity) = deparent!(transformof(ntt))
 parentof(child::AbstractEntity) = getcustomdata(AbstractEntity, transformof(ntt))
+childrenof(T::Type{<:AbstractEntity}, ntt::AbstractEntity) = filter!(child -> child != nothing, [getcustomdata(T, child) for child ∈ transformof(ntt).children])
+childrenof(ntt::AbstractEntity) = childrenof(AbstractEntity, ntt)
 Base.push!(world::World, ntt::AbstractEntity) = push!(world, transformof(ntt))
 Base.delete!(world::World, ntt::AbstractEntity) = delete!(world, transformof(ntt))
 
