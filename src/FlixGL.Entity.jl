@@ -1,17 +1,11 @@
+export EntityClass, RegularEntity, EmptyEntity, entityclass
 export AbstractEntity, AbstractEntity2D
-export @proxyentity
 export parentof, childrenof
 
-macro proxyentity(type, prop)
-    esc(quote
-        FlixGL.vertsof(ntt::$type)     = FlixGL.vertsof(ntt.$prop)
-        FlixGL.countverts(ntt::$type)  = FlixGL.countverts(ntt.$prop)
-        FlixGL.vaoof(ntt::$type)       = FlixGL.vaoof(ntt.$prop)
-        FlixGL.transformof(ntt::$type) = FlixGL.transformof(ntt.$prop)
-        FlixGL.materialof(ntt::$type)  = FlixGL.materialof(ntt.$prop)
-        FlixGL.drawmodeof(ntt::$type)  = FlixGL.drawmodeof(ntt.$prop)
-    end)
-end
+abstract type EntityClass end
+struct RegularEntity <: EntityClass end
+struct EmptyEntity   <: EntityClass end
+entityclass(::Type) = RegularEntity()
 
 abstract type AbstractEntity end
 abstract type AbstractEntity2D <: AbstractEntity end
@@ -45,3 +39,4 @@ Base.push!(world::World, ntt::AbstractEntity) = push!(world, transformof(ntt))
 Base.delete!(world::World, ntt::AbstractEntity) = delete!(world, transformof(ntt))
 
 include("./FlixGL.Entity.Sprite.jl")
+include("./FlixGL.Entity.Empty.jl")
