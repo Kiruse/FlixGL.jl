@@ -3,12 +3,12 @@ export @proxyentity
 
 macro proxyentity(type, prop)
     esc(quote
-        vertsof(ntt::$type)     = vertsof(ntt.$prop)
-        countverts(ntt::$type)  = countverts(ntt.$prop)
-        vaoof(ntt::$type)       = vaoof(ntt.$prop)
-        transformof(ntt::$type) = transformof(ntt.$prop)
-        materialof(ntt::$type)  = materialof(ntt.$prop)
-        drawmodeof(ntt::$type)  = drawmodeof(ntt.$prop)
+        FlixGL.vertsof(ntt::$type)     = FlixGL.vertsof(ntt.$prop)
+        FlixGL.countverts(ntt::$type)  = FlixGL.countverts(ntt.$prop)
+        FlixGL.vaoof(ntt::$type)       = FlixGL.vaoof(ntt.$prop)
+        FlixGL.transformof(ntt::$type) = FlixGL.transformof(ntt.$prop)
+        FlixGL.materialof(ntt::$type)  = FlixGL.materialof(ntt.$prop)
+        FlixGL.drawmodeof(ntt::$type)  = FlixGL.drawmodeof(ntt.$prop)
     end)
 end
 
