@@ -41,28 +41,38 @@ function use(mat::Sprite2DMaterial)
 end
 
 
-struct Sprite2D <: AbstractEntity2D
+mutable struct Sprite2D <: AbstractEntity2D
     vao::Sprite2DVAO
     transform::Transform2D
     material::AbstractMaterial
+    vertices::Vector{Sprite2DVertex}
     
-    function Sprite2D(vao, transform, material)
-        inst = new(vao, transform, material)
+    function Sprite2D(vao, transform, material, vertices)
+        inst = new(vao, transform, material, vertices)
         transform.customdata = inst
         inst
     end
 end
 
-function Sprite2D(width::Integer, height::Integer, tex::Texture2D; frame::Rect = Rect{Float32}(0, 0, 1, 1), taint::Color = White+Alpha, static::Bool = true, transform::Transform2D = Transform2D{Float64}())
+function Sprite2D(width::Integer,
+                  height::Integer,
+                  tex::Texture2D;
+                  frame::Rect = Rect{Float32}(0, 0, 1, 1),
+                  taint::Color = White+Alpha,
+                  originoffset::Union{Vector2, NTuple{2, <:Real}} = (0, 0),
+                  static::Bool = true,
+                  transform::Transform2D = Transform2D{Float64}()
+                 )
     halfwidth  = width/2
     halfheight = height/2
+    offx, offy = originoffset .* (halfwidth, halfheight)
     verts = [
-        Sprite2DVertex(-halfwidth, -halfheight, frame.min[1], frame.min[2]),
-        Sprite2DVertex( halfwidth, -halfheight, frame.max[1], frame.min[2]),
-        Sprite2DVertex( halfwidth,  halfheight, frame.max[1], frame.max[2]),
-        Sprite2DVertex(-halfwidth,  halfheight, frame.min[1], frame.max[2])
+        Sprite2DVertex(-halfwidth + offx, -halfheight + offy, frame.min[1], frame.min[2]),
+        Sprite2DVertex( halfwidth + offx, -halfheight + offy, frame.max[1], frame.min[2]),
+        Sprite2DVertex( halfwidth + offx,  halfheight + offy, frame.max[1], frame.max[2]),
+        Sprite2DVertex(-halfwidth + offx,  halfheight + offy, frame.min[1], frame.max[2])
     ]
-    Sprite2D(upload(verts, static=static), transform, Sprite2DMaterial(tex, taint))
+    Sprite2D(upload(verts, static=static), transform, Sprite2DMaterial(tex, taint), verts)
 end
 
 countverts(::Sprite2D) = 4
@@ -83,8 +93,10 @@ end
 function update!(sprite::Sprite2D; verts::Optional{AbstractVector{Sprite2DVertex}} = nothing, tex::Optional{Texture2D} = nothing, taint::Optional{<:Color} = nothing)
     if verts != nothing
         @assert !sprite.vao.static
+        @assert length(verts) == length(sprite.vertices)
         LowLevel.buffer_update(sprite.vao.vbo_coords, verts, mapper=vert->vert.coords)
         LowLevel.buffer_update(sprite.vao.vbo_uvs,    verts, mapper=vert->vert.uvs)
+        sprite.vertices = verts
     end
     
     if tex != nothing

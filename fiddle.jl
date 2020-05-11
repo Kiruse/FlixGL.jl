@@ -14,7 +14,7 @@ cam = Camera2D()
 img = load_image(PNGImageFormat, "./assets/textures/test.png")
 tex = texture(img)
 
-sprite1 = Sprite2D(200, 200, tex)
+sprite1 = Sprite2D(200, 200, tex, originoffset=(-0.9, -0.9))
 translate!(sprite1, Vector2(50, 0))
 rotate!(sprite1, deg2rad(45))
 # scale!(sprite1, Vector2(1.5, 1.5))
