@@ -4,7 +4,7 @@ import GLFW
 using StaticArrays
 using VPEWorlds
 
-export use, destroy, upload
+export use, destroy, upload, tick!
 
 # Forward VPEWorlds exports
 export Vector2, Vector3, Vector4, Matrix2, Matrix3, Matrix4
@@ -27,6 +27,7 @@ include("./FlixGL.Image.jl")
 include("./FlixGL.Texture.jl")
 include("./FlixGL.Material.jl")
 include("./FlixGL.UniformIdentifier.jl")
+include("./FlixGL.FrameDrivers.jl")
 include("./FlixGL.Camera.jl")
 include("./FlixGL.Entity.jl")
 include("./FlixGL.RenderPipeline.jl")
