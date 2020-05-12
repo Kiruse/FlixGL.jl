@@ -42,7 +42,7 @@ function Base.bind(va::VertexArray, buff::PrimitiveArrayBuffer{Float64}, locatio
     ModernGL.glEnableVertexAttribArray(location)
     checkglerror()
     
-    ModernGL.glVertexAttribLPointer(location, size, gltype(T), stride, Ptr{Cvoid}(convert(UInt64, offset)))
+    ModernGL.glVertexAttribLPointer(location, size, gltype(Float64), stride, Ptr{Cvoid}(convert(UInt64, offset)))
     checkglerror()
 end
 
