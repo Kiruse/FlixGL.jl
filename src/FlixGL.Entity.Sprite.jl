@@ -63,20 +63,23 @@ function Sprite2D(width::Integer,
                   static::Bool = true,
                   transform::Transform2D = Transform2D{Float64}()
                  )
-    halfwidth  = width/2
-    halfheight = height/2
-    offx, offy = originoffset .* (halfwidth, halfheight)
-    verts = [
-        Sprite2DVertex(-halfwidth + offx, -halfheight + offy, frame.min[1], frame.min[2]),
-        Sprite2DVertex( halfwidth + offx, -halfheight + offy, frame.max[1], frame.min[2]),
-        Sprite2DVertex( halfwidth + offx,  halfheight + offy, frame.max[1], frame.max[2]),
-        Sprite2DVertex(-halfwidth + offx,  halfheight + offy, frame.min[1], frame.max[2])
-    ]
+    verts = getspriteverts((width, height), originoffset, frame)
     Sprite2D(upload(verts, static=static), transform, Sprite2DMaterial(tex, taint), verts)
 end
 
 countverts(::Sprite2D) = 4
 drawmodeof(::Sprite2D) = LowLevel.TriangleFanDrawMode
+
+function upload(coords, uvs; static::Bool = true)
+    frequency, nature = getbufferusage(static, false)
+    
+    vao = LowLevel.vertexarray()
+    vbo_coords = LowLevel.buffer(coords, frequency, nature)
+    vbo_uvs    = LowLevel.buffer(uvs,    frequency, nature)
+    bind(vao, vbo_coords, 0, 2)
+    bind(vao, vbo_uvs,    1, 2)
+    Sprite2DVAO(vao, vbo_coords, vbo_uvs, static)
+end
 
 function upload(verts::AbstractVector{Sprite2DVertex}; static::Bool = true)
     frequency, nature = getbufferusage(static, false)
@@ -90,13 +93,32 @@ function upload(verts::AbstractVector{Sprite2DVertex}; static::Bool = true)
     Sprite2DVAO(vao, vbo_coords, vbo_uvs, static)
 end
 
-function update!(sprite::Sprite2D; verts::Optional{AbstractVector{Sprite2DVertex}} = nothing, tex::Optional{Texture2D} = nothing, taint::Optional{<:Color} = nothing)
-    if verts != nothing
+function update!(sprite::Sprite2D; size = nothing, originoffset = (0, 0), uvs::Optional{Rect} = nothing, tex::Optional{Texture2D} = nothing, taint::Optional{<:Color} = nothing)
+    if size != nothing && uvs != nothing
         @assert !sprite.vao.static
-        @assert length(verts) == length(sprite.vertices)
-        LowLevel.buffer_update(sprite.vao.vbo_coords, verts, mapper=vert->vert.coords)
-        LowLevel.buffer_update(sprite.vao.vbo_uvs,    verts, mapper=vert->vert.uvs)
-        sprite.vertices = verts
+        coords = update_sprite_coords(sprite, size, originoffset)
+        uvs    = update_sprite_uvs(sprite, uvs)
+        for i ∈ 1:4
+            x, y = coords[2i-1:2i]
+            u, v = uvs[   2i-1:2i]
+            sprite.vertices[i] = Sprite2DVertex(x, y, u, v)
+        end
+    elseif size != nothing
+        @assert !sprite.vao.static
+        coords = update_sprite_coords(sprite, size, originoffset)
+        for i ∈ 1:4
+            x, y = coords[2i-1:2i]
+            u, v = sprite.vertices[i].uvs
+            sprite.vertices[i] = Sprite2DVertex(x, y, u, v)
+        end
+    elseif uvs != nothing
+        @assert !sprite.vao.static
+        uvs = update_sprite_uvs(sprite, uvs)
+        for i ∈ 1:4
+            x, y = sprite.vertices[i].coords
+            u, v = uvs[2i-1:2i]
+            sprite.vertices[i] = Sprite2DVertex(x, y, u, v)
+        end
     end
     
     if tex != nothing
@@ -110,7 +132,49 @@ function update!(sprite::Sprite2D; verts::Optional{AbstractVector{Sprite2DVertex
     sprite
 end
 
+function update_sprite_coords(sprite::Sprite2D, size, originoffset)
+    coords = getspritecoords(size, originoffset)
+    LowLevel.buffer_update(sprite.vao.vbo_coords, coords)
+    coords
+end
+
+function update_sprite_uvs(sprite::Sprite2D, frame::Rect)
+    uvs = getspriteuvs(frame)
+    LowLevel.buffer_update(sprite.vao.vbo_uvs, uvs)
+    uvs
+end
+
+function getspriteverts(size, originoffset, frame::Rect)
+    coords = getspritecoords(size, originoffset)
+    uvs    = getspriteuvs(frame)
+    [((x, y) = coords[i:i+1]; (u, v) = uvs[i:i+1]; Sprite2DVertex(x, y, u, v)) for i ∈ 1:2:8]
+end
+
+function getspritecoords(size, originoffset)
+    halfwidth, halfheight = size ./ 2
+    offx, offy = originoffset .* (halfwidth, halfheight)
+    Float32[
+        -halfwidth + offx, -halfheight + offy,
+         halfwidth + offx, -halfheight + offy,
+         halfwidth + offx,  halfheight + offy,
+        -halfwidth + offx,  halfheight + offy
+    ]
+end
+
+function getspriteuvs(frame::Rect)
+    Float32[
+        frame.min[1], frame.min[2],
+        frame.max[1], frame.min[2],
+        frame.max[1], frame.max[2],
+        frame.min[1], frame.max[2]
+    ]
+end
+
+
+# Globals
+
+prog_sprite2d = nothing
 
 # Constants
-prog_sprite2d = nothing
+
 const unidTaint = UniformIdentifier("uniTaint")
