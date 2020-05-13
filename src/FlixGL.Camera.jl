@@ -9,5 +9,6 @@ end
 Camera2D{T}() where T = Camera2D{T}(Transform2D{T}())
 Camera2D() = Camera2D{Float64}()
 
-VPEWorlds.obj2world(cam::AbstractCamera) = obj2world(cam.transform)
-VPEWorlds.world2obj(cam::AbstractCamera) = world2obj(cam.transform)
+VPECore.obj2world(cam::AbstractCamera) = obj2world(cam.transform)
+VPECore.world2obj(cam::AbstractCamera) = world2obj(cam.transform)
+VPECore.update(cam::AbstractCamera) = update(cam.transform)

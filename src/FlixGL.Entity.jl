@@ -18,11 +18,11 @@ transformof(ntt::AbstractEntity) = ntt.transform
 materialof( ntt::AbstractEntity) = ntt.material
 drawmodeof( ntt::AbstractEntity) = LowLevel.TrianglesDrawMode
 
-VPEWorlds.translate!(ntt::AbstractEntity, offset)   = translate!(transformof(ntt), offset)
-VPEWorlds.rotate!(   ntt::AbstractEntity, rotation) = rotate!(   transformof(ntt), rotation)
-VPEWorlds.scale!(    ntt::AbstractEntity, scale)    = scale!(    transformof(ntt), scale)
-VPEWorlds.obj2world(ntt::AbstractEntity) = obj2world(transformof(ntt))
-VPEWorlds.world2obj(ntt::AbstractEntity) = world2obj(transformof(ntt))
+VPECore.translate!(ntt::AbstractEntity, offset)   = translate!(transformof(ntt), offset)
+VPECore.rotate!(   ntt::AbstractEntity, rotation) = rotate!(   transformof(ntt), rotation)
+VPECore.scale!(    ntt::AbstractEntity, scale)    = scale!(    transformof(ntt), scale)
+VPECore.obj2world(ntt::AbstractEntity) = obj2world(transformof(ntt))
+VPECore.world2obj(ntt::AbstractEntity) = world2obj(transformof(ntt))
 
 # Free OpenGL resources at will
 function destroy(ntt::AbstractEntity)
@@ -30,10 +30,10 @@ function destroy(ntt::AbstractEntity)
 end
 
 
-VPEWorlds.parent!(child::AbstractEntity, parent::AbstractEntity) = parent!(transformof(child), transformof(parent))
-VPEWorlds.deparent!(ntt::AbstractEntity) = deparent!(transformof(ntt))
-parentof(child::AbstractEntity) = getcustomdata(AbstractEntity, transformof(ntt))
-childrenof(T::Type{<:AbstractEntity}, ntt::AbstractEntity) = filter!(child -> child != nothing, [getcustomdata(T, child) for child ∈ transformof(ntt).children])
+VPECore.parent!(child::AbstractEntity, parent::AbstractEntity) = parent!(transformof(child), transformof(parent))
+VPECore.deparent!(ntt::AbstractEntity) = deparent!(transformof(ntt))
+parentof(child::AbstractEntity) = getcustomdata(AbstractEntity, transformof(child))
+childrenof(T::Type{<:AbstractEntity}, ntt::AbstractEntity) = filter!(child -> child !== nothing, [getcustomdata(T, child) for child ∈ transformof(ntt).children])
 childrenof(ntt::AbstractEntity) = childrenof(AbstractEntity, ntt)
 Base.push!(world::World, ntt::AbstractEntity) = push!(world, transformof(ntt))
 Base.delete!(world::World, ntt::AbstractEntity) = delete!(world, transformof(ntt))

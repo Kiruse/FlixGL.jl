@@ -30,7 +30,7 @@ mutable struct FrameDriver
     end
 end
 
-function tick!(driver::FrameDriver, dt::AbstractFloat)
+function VPECore.tick!(driver::FrameDriver, dt::AbstractFloat)
     if driver.interval > 0
         driver.time += dt
         if driver.time >= driver.interval
