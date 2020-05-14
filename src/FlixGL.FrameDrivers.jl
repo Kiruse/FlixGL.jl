@@ -7,6 +7,7 @@ mutable struct FrameDriver
     framew::Integer
     frameh::Integer
     idx::Integer
+    start::Integer
     count::Integer
     interval::Integer
     time::AbstractFloat
@@ -17,6 +18,7 @@ mutable struct FrameDriver
                          framew,
                          frameh;
                          idx = 1,
+                         start = 1,
                          count = 1,
                          interval = 0,
                          time = 0,
@@ -26,7 +28,7 @@ mutable struct FrameDriver
         nr  = imgh ÷ frameh
         @assert fpr * nr >= count  "Frame count ($count) exceeds total number of frames ($(fpr*nr))"
         idx = clamp(idx, 1, count)
-        new(imgw, imgh, framew, frameh, idx, count, interval, time, callback)
+        new(imgw, imgh, framew, frameh, idx, start, count, interval, time, callback)
     end
 end
 
@@ -36,11 +38,11 @@ function VPECore.tick!(driver::FrameDriver, dt::AbstractFloat)
         if driver.time >= driver.interval
             driver.time -= driver.interval
             
-            driver.idx += 1
+            driver.idx = max(driver.start, driver.idx+1)
             if driver.idx > driver.count
-                driver.idx = 1
+                driver.idx = driver.start
             end
-            if driver.callback != nothing
+            if driver.callback !== nothing
                 driver.callback(driver.idx, getframeuvs(driver))
             end
         end
