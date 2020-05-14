@@ -67,6 +67,7 @@ function Sprite2D(width::Integer,
     Sprite2D(upload(verts, static=static), transform, Sprite2DMaterial(tex, taint), verts)
 end
 
+isrenderable(::Type{Sprite2D}) = true
 countverts(::Sprite2D) = 4
 drawmodeof(::Sprite2D) = LowLevel.TriangleFanDrawMode
 
@@ -151,14 +152,7 @@ function getspriteverts(size, originoffset, frame::Rect)
 end
 
 function getspritecoords(size, originoffset)
-    halfwidth, halfheight = size ./ 2
-    offx, offy = originoffset .* (halfwidth, halfheight)
-    Float32[
-        -halfwidth + offx, -halfheight + offy,
-         halfwidth + offx, -halfheight + offy,
-         halfwidth + offx,  halfheight + offy,
-        -halfwidth + offx,  halfheight + offy
-    ]
+    getrectcoords(size..., originoffset)
 end
 
 function getspriteuvs(frame::Rect)

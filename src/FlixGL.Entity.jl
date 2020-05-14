@@ -1,16 +1,16 @@
 export EntityClass, RegularEntity, EmptyEntity, entityclass
 export AbstractEntity, AbstractEntity2D
-export parentof, childrenof
+export parentof, childrenof, isrenderable
 
 abstract type EntityClass end
-struct RegularEntity <: EntityClass end
-struct EmptyEntity   <: EntityClass end
-entityclass(::Type) = RegularEntity()
+struct WorldEntity <: EntityClass end
+entityclass(::Type) = WorldEntity()
 
 abstract type AbstractEntity end
 abstract type AbstractEntity2D <: AbstractEntity end
 
-# Entity Traits
+# Entity Characteristics
+isrenderable(::Type{<:AbstractEntity}) = false
 vertsof(    ntt::AbstractEntity) = error("Not implemented")
 countverts( ntt::AbstractEntity) = length(vertsof(ntt))
 vaoof(      ntt::AbstractEntity) = ntt.vao
@@ -37,6 +37,20 @@ childrenof(T::Type{<:AbstractEntity}, ntt::AbstractEntity) = filter!(child -> ch
 childrenof(ntt::AbstractEntity) = childrenof(AbstractEntity, ntt)
 Base.push!(world::World, ntt::AbstractEntity) = push!(world, transformof(ntt))
 Base.delete!(world::World, ntt::AbstractEntity) = delete!(world, transformof(ntt))
+
+
+function getrectcoords(width, height, originoffset)
+    halfwidth  = width  / 2
+    halfheight = height / 2
+    offx, offy = originoffset .* (halfwidth, halfheight)
+    Float32[
+        -halfwidth + offx, -halfheight + offy,
+         halfwidth + offx, -halfheight + offy,
+         halfwidth + offx,  halfheight + offy,
+        -halfwidth + offx,  halfheight + offy
+    ]
+end
+
 
 include("./FlixGL.Entity.Sprite.jl")
 include("./FlixGL.Entity.Empty.jl")
