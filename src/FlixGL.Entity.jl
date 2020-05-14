@@ -44,10 +44,10 @@ function getrectcoords(width, height, originoffset)
     halfheight = height / 2
     offx, offy = originoffset .* (halfwidth, halfheight)
     Float32[
-        -halfwidth + offx, -halfheight + offy,
-         halfwidth + offx, -halfheight + offy,
-         halfwidth + offx,  halfheight + offy,
-        -halfwidth + offx,  halfheight + offy
+        -halfwidth - offx, -halfheight - offy,
+         halfwidth - offx, -halfheight - offy,
+         halfwidth - offx,  halfheight - offy,
+        -halfwidth - offx,  halfheight - offy
     ]
 end
 
