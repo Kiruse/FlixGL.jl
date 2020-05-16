@@ -24,6 +24,10 @@ function wrapping!(tex::Texture2D, uwrap::Type{<:AbstractTextureWrap}, vwrap::Ty
     tex
 end
 
+function destroy(tex::AbstractTexture)
+    LowLevel.destroy(tex.internal)
+end
+
 # TODO: DepthTexture and DepthStencilTexture structs
 
 
