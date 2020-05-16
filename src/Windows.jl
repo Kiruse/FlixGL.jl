@@ -132,4 +132,6 @@ function initwindow()
     setbgcolor(Black3)
 end
 
-wantsclose() = GLFW.WindowShouldClose(activewindow().handle)
+wantsclose() = _wantsclose || GLFW.WindowShouldClose(activewindow().handle)
+wantsclose(value::Bool) = (global _wantsclose; _wantsclose = value)
+_wantsclose = false
