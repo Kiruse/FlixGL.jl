@@ -1,6 +1,6 @@
 export AbstractRenderPipeline, ForwardRenderPipeline, DeferredRenderPipeline
 export AbstractRenderSpace, WorldRenderSpace, ScreenRenderSpace
-export render, render_background, setbgcolor, getbgcolor
+export render, render_background, getrenderables, getrenderables!, setbgcolor, getbgcolor
 
 abstract type AbstractRenderPipeline end
 struct ForwardRenderPipeline <: AbstractRenderPipeline end
@@ -29,3 +29,14 @@ getbgcolor() = _bgcolor
 getbgsprite() = _bgsprite
 _bgcolor = NormColor3(0, 0, 0)
 _bgsprite = nothing
+
+
+function getrenderables(T::Type{<:AbstractEntity}, world::World, cls::Type{<:EntityClass})
+    results = T[]
+    getrenderables!(results, world, cls)
+    results
+end
+function getrenderables!(results::Vector{T}, world::World, cls::Type{<:EntityClass}) where {T<:AbstractEntity}
+    collectentities!(results, world, cls)
+    filter!(ntt->wantsrender(ntt), results)
+end

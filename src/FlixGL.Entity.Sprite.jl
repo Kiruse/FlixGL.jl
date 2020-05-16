@@ -43,12 +43,13 @@ end
 
 mutable struct Sprite2D <: AbstractEntity2D
     vao::Sprite2DVAO
+    visible::Bool
     transform::Transform2D
     material::AbstractMaterial
     vertices::Vector{Sprite2DVertex}
     
-    function Sprite2D(vao, transform, material, vertices)
-        inst = new(vao, transform, material, vertices)
+    function Sprite2D(vao, visible, transform, material, vertices)
+        inst = new(vao, visible, transform, material, vertices)
         transform.customdata = inst
         inst
     end
@@ -64,10 +65,10 @@ function Sprite2D(width::Integer,
                   transform::Transform2D = Transform2D{Float64}()
                  )
     verts = getspriteverts((width, height), originoffset, frame)
-    Sprite2D(upload(verts, static=static), transform, Sprite2DMaterial(tex, taint), verts)
+    Sprite2D(upload(verts, static=static), true, transform, Sprite2DMaterial(tex, taint), verts)
 end
 
-isrenderable(::Type{Sprite2D}) = true
+wantsrender(sprite::Sprite2D) = sprite.visible
 countverts(::Sprite2D) = 4
 drawmodeof(::Sprite2D) = LowLevel.TriangleFanDrawMode
 

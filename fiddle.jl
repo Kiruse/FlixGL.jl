@@ -31,8 +31,6 @@ parent!(sprite2, sprite1)
 rotate!(sprite2, deg2rad(-45))
 translate!(sprite2, Vector2(150, 0))
 
-ntts = [sprite1, sprite2]
-
 frameloop() do dt
     tick!(world, dt)
     rotate!(sprite1, deg2rad( 10) * dt)
@@ -40,7 +38,7 @@ frameloop() do dt
     
     GLFW.PollEvents()
     render_background(ForwardRenderPipeline)
-    render(ForwardRenderPipeline, WorldRenderSpace, cam, ntts)
+    render(ForwardRenderPipeline, WorldRenderSpace, cam, getrenderables(AbstractEntity2D, WorldEntity, world))
     FlixGL.flip()
     
     return !wantsclose()
