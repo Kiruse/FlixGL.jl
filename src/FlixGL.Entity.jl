@@ -20,6 +20,7 @@ materialof( ntt::AbstractEntity) = ntt.material
 drawmodeof( ntt::AbstractEntity) = LowLevel.TrianglesDrawMode
 
 # Generic Entity Getters/Setters
+isvisible(ntt::AbstractEntity) = ntt.visible
 setvisibility(ntt::AbstractEntity, visible::Bool) = ntt.visible = visible
 setvisible(ntt::AbstractEntity) = setvisibility(ntt, true)
 sethidden( ntt::AbstractEntity) = setvisibility(ntt, false)
