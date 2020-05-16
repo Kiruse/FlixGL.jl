@@ -1,7 +1,7 @@
 export EntityClass, WorldEntity, entityclass
 export AbstractEntity, AbstractEntity2D
 export vertsof, transformof
-export parentof, childrenof, setvisibility, setvisible, sethidden, collectentities, collectentities!, isentityclass
+export parentof, childrenof, setvisibility, isvisible, setvisible, sethidden, collectentities, collectentities!, isentityclass
 
 abstract type EntityClass end
 struct WorldEntity <: EntityClass end
