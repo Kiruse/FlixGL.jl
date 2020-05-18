@@ -25,6 +25,15 @@ setvisibility(ntt::AbstractEntity, visible::Bool) = ntt.visible = visible
 setvisible(ntt::AbstractEntity) = setvisibility(ntt, true)
 sethidden( ntt::AbstractEntity) = setvisibility(ntt, false)
 
+function setvisibility(ntt::AbstractEntity, visible::Bool, propagate_to_children::Bool)
+    setvisibility(ntt, visible)
+    if propagate_to_children
+        foreach(childrenof(ntt)) do child
+            setvisibility(ntt, visible, true)
+        end
+    end
+end
+
 # Transformations
 VPECore.translate!(ntt::AbstractEntity, offset)   = translate!(transformof(ntt), offset)
 VPECore.rotate!(   ntt::AbstractEntity, rotation) = rotate!(   transformof(ntt), rotation)
