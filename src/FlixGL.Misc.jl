@@ -1,3 +1,4 @@
+export Rect
 export xcoord, ycoord, zcoord, wcoord
 export curry, hflip!, vflip!
 export mm2in, in2mm
