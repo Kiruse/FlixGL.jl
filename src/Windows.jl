@@ -2,7 +2,7 @@ import ModernGL
 import GLFW
 export Window, WindowCreationArgs
 export DontCare, dontcare
-export initwindow, activewindow, resize!, flip, setvsync, clearvsync, enabletransparency, disabletransparency, wantsclose, pollevents
+export initwindow, activewindow, flip, setvsync, clearvsync, enabletransparency, disabletransparency, wantsclose, pollevents
 export setfullscreen!, clearfullscreen!, isfullscreen, setmonitor!, getmonitor
 export FullscreenMode, Windowed, Fullscreen, Borderless
 
@@ -82,7 +82,7 @@ function Window(; title::AbstractString = "<untitled window>", width::Union{Dont
 end
 
 Base.size(wnd::Window) = (dims = GLFW.GetWindowSize(wnd.handle); (dims.width, dims.height))
-resize!(wnd::Window, width::Integer, height::Integer) = (GLFW.SetWindowSize(wnd.handle, width, height); wnd)
+Base.resize!(wnd::Window, width::Integer, height::Integer) = (GLFW.SetWindowSize(wnd.handle, width, height); wnd)
 
 function wndresizecallback(wnd, _, width, height)
     ModernGL.glViewport(0, 0, width, height)
