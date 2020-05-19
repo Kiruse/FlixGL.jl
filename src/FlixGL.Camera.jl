@@ -11,4 +11,4 @@ Camera2D() = Camera2D{Float64}()
 
 VPECore.obj2world(cam::AbstractCamera) = obj2world(cam.transform)
 VPECore.world2obj(cam::AbstractCamera) = world2obj(cam.transform)
-VPECore.update(cam::AbstractCamera) = update(cam.transform)
+VPECore.update!(cam::AbstractCamera) = update!(cam.transform)
