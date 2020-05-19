@@ -95,11 +95,11 @@ function upload(verts::AbstractVector{Sprite2DVertex}; static::Bool = true)
     Sprite2DVAO(vao, vbo_coords, vbo_uvs, static)
 end
 
-function update!(sprite::Sprite2D; size = nothing, originoffset = (0, 0), uvs::Optional{Rect} = nothing, tex::Optional{Texture2D} = nothing, taint::Optional{<:Color} = nothing)
+function VPECore.change!(sprite::Sprite2D; size = nothing, originoffset = (0, 0), uvs::Optional{Rect} = nothing, tex::Optional{Texture2D} = nothing, taint::Optional{<:Color} = nothing)
     if size !== nothing && uvs !== nothing
         @assert !sprite.vao.static
-        coords = update_sprite_coords(sprite, size, originoffset)
-        uvs    = update_sprite_uvs(sprite, uvs)
+        coords = change_sprite_coords(sprite, size, originoffset)
+        uvs    = change_sprite_uvs(sprite, uvs)
         for i ∈ 1:4
             x, y = coords[2i-1:2i]
             u, v = uvs[   2i-1:2i]
@@ -107,7 +107,7 @@ function update!(sprite::Sprite2D; size = nothing, originoffset = (0, 0), uvs::O
         end
     elseif size !== nothing
         @assert !sprite.vao.static
-        coords = update_sprite_coords(sprite, size, originoffset)
+        coords = change_sprite_coords(sprite, size, originoffset)
         for i ∈ 1:4
             x, y = coords[2i-1:2i]
             u, v = sprite.vertices[i].uvs
@@ -115,7 +115,7 @@ function update!(sprite::Sprite2D; size = nothing, originoffset = (0, 0), uvs::O
         end
     elseif uvs !== nothing
         @assert !sprite.vao.static
-        uvs = update_sprite_uvs(sprite, uvs)
+        uvs = change_sprite_uvs(sprite, uvs)
         for i ∈ 1:4
             x, y = sprite.vertices[i].coords
             u, v = uvs[2i-1:2i]
@@ -134,13 +134,13 @@ function update!(sprite::Sprite2D; size = nothing, originoffset = (0, 0), uvs::O
     sprite
 end
 
-function update_sprite_coords(sprite::Sprite2D, size, originoffset)
+function change_sprite_coords(sprite::Sprite2D, size, originoffset)
     coords = getspritecoords(size, originoffset)
     LowLevel.buffer_update(sprite.vao.vbo_coords, coords)
     coords
 end
 
-function update_sprite_uvs(sprite::Sprite2D, frame::Rect)
+function change_sprite_uvs(sprite::Sprite2D, frame::Rect)
     uvs = getspriteuvs(frame)
     LowLevel.buffer_update(sprite.vao.vbo_uvs, uvs)
     uvs
