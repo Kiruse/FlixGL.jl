@@ -96,7 +96,7 @@ function upload(verts::AbstractVector{Sprite2DVertex}; static::Bool = true)
 end
 
 function update!(sprite::Sprite2D; size = nothing, originoffset = (0, 0), uvs::Optional{Rect} = nothing, tex::Optional{Texture2D} = nothing, taint::Optional{<:Color} = nothing)
-    if size != nothing && uvs != nothing
+    if size !== nothing && uvs !== nothing
         @assert !sprite.vao.static
         coords = update_sprite_coords(sprite, size, originoffset)
         uvs    = update_sprite_uvs(sprite, uvs)
@@ -105,7 +105,7 @@ function update!(sprite::Sprite2D; size = nothing, originoffset = (0, 0), uvs::O
             u, v = uvs[   2i-1:2i]
             sprite.vertices[i] = Sprite2DVertex(x, y, u, v)
         end
-    elseif size != nothing
+    elseif size !== nothing
         @assert !sprite.vao.static
         coords = update_sprite_coords(sprite, size, originoffset)
         for i ∈ 1:4
@@ -113,7 +113,7 @@ function update!(sprite::Sprite2D; size = nothing, originoffset = (0, 0), uvs::O
             u, v = sprite.vertices[i].uvs
             sprite.vertices[i] = Sprite2DVertex(x, y, u, v)
         end
-    elseif uvs != nothing
+    elseif uvs !== nothing
         @assert !sprite.vao.static
         uvs = update_sprite_uvs(sprite, uvs)
         for i ∈ 1:4
@@ -123,11 +123,11 @@ function update!(sprite::Sprite2D; size = nothing, originoffset = (0, 0), uvs::O
         end
     end
     
-    if tex != nothing
+    if tex !== nothing
         sprite.material.texture = tex
     end
     
-    if taint != nothing
+    if taint !== nothing
         sprite.material.taint = taint
     end
     

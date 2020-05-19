@@ -36,10 +36,10 @@ mutable struct Window
 end
 
 function Window(args::WindowCreationArgs)
-    if args.monitor != nothing && args.monitor > length(Monitors) args.monitor = 1 end
+    if args.monitor !== nothing && args.monitor > length(Monitors) args.monitor = 1 end
     monitor = nothing
     
-    if args.monitor != nothing && args.fullscreen == Borderless
+    if args.monitor !== nothing && args.fullscreen == Borderless
         monitor = Monitor(args.monitor)
         vidmode = getvideomode(monitor)
         
@@ -47,7 +47,7 @@ function Window(args::WindowCreationArgs)
         args.height = vidmode.height
         args.bits   = (vidmode.redbits, vidmode.greenbits, vidmode.bluebits)
         args.refresh_rate = vidmode.refreshrate
-    elseif args.monitor != nothing
+    elseif args.monitor !== nothing
         monitor = Monitor(args.monitor)
     end
     
@@ -104,7 +104,7 @@ function clearfullscreen!(wnd::Window)
     GLFW.SetWindowMonitor(wnd.handle, C_NULL, 0, 0, width, height, GLFW.DONT_CARE)
     wnd
 end
-isfullscreen(wnd::Window) = wnd.monitor != nothing
+isfullscreen(wnd::Window) = wnd.monitor !== nothing
 
 setmonitor!(wnd::Window, monitor::Monitor) = setfullscreen!(wnd, monitor)
 setmonitor!(wnd::Window, ::Nothing) = clearfullscreen!(wnd)

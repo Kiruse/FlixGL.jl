@@ -18,7 +18,7 @@ function wrapping!(tex::Texture2D, uwrap::Type{<:AbstractTextureWrap}, vwrap::Ty
     ModernGL.glTexParameteri( gltex, ModernGL.GL_TEXTURE_WRAP_S, gltype(uwrap))
     ModernGL.glTexParameteri( gltex, ModernGL.GL_TEXTURE_WRAP_T, gltype(vwrap))
     
-    if border != nothing
+    if border !== nothing
         @assert length(border) == 4
         ModernGL.glTexParameterfv(gltex, ModernGL.GL_TEXTURE_BORDER_COLOR, pointer(border))
     end
