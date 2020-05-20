@@ -21,15 +21,15 @@ drawmodeof( ntt::AbstractEntity) = LowLevel.TrianglesDrawMode
 
 # Generic Entity Getters/Setters
 isvisible(ntt::AbstractEntity) = ntt.visible
-setvisibility(ntt::AbstractEntity, visible::Bool) = ntt.visible = visible
-setvisible(ntt::AbstractEntity) = setvisibility(ntt, true)
-sethidden( ntt::AbstractEntity) = setvisibility(ntt, false)
+setvisibility!(ntt::AbstractEntity, visible::Bool) = ntt.visible = visible
+setvisible!(ntt::AbstractEntity) = setvisibility!(ntt, true)
+sethidden!( ntt::AbstractEntity) = setvisibility!(ntt, false)
 
-function setvisibility(ntt::AbstractEntity, visible::Bool, propagate_to_children::Bool)
-    setvisibility(ntt, visible)
+function setvisibility!(ntt::AbstractEntity, visible::Bool, propagate_to_children::Bool)
+    setvisibility!(ntt, visible)
     if propagate_to_children
         foreach(childrenof(ntt)) do child
-            setvisibility(ntt, visible, true)
+            setvisibility!(ntt, visible, true)
         end
     end
 end
