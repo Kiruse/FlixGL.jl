@@ -20,8 +20,8 @@ struct Color{T} <: AbstractColor{T}
     b::T
     a::T
 end
-Color{T}(r, g, b) where T = Color{T}(r, g, b, 0)
-Color(r::Number, g::Number, b::Number, a::Number = 0) = ((r, g, b, a) = promote(r, g, b, a); Color{typeof(r)}(r, g, b, a))
+Color{T}(r, g, b) where T = Color{T}(r, g, b, 1)
+Color(r::Number, g::Number, b::Number, a::Number = 1) = ((r, g, b, a) = promote(r, g, b, a); Color{typeof(r)}(r, g, b, a))
 Color{UInt8}(hex::UInt32) = Color{UInt8}(UInt8(hex >> 24 & 0xFF), UInt8(hex >> 16 & 0xFF), UInt8(hex >> 8 & 0xFF), UInt8(hex & 0xFF))
 Color(hex::UInt32) = Color{UInt8}(hex)
 
@@ -145,14 +145,14 @@ end
 # Cross-Type Conversions w/ Same Channel Type
 # Mixed channel types are handled using above methods.
 Base.convert(::Type{OpaqueColor{T}}, color::Color{T}) where T = OpaqueColor{T}(color.r, color.g, color.b)
-Base.convert(::Type{Color{T}}, color::OpaqueColor{T}) where T = Color{T}(color.r, color.g, color.b, 0)
+Base.convert(::Type{Color{T}}, color::OpaqueColor{T}) where T = Color{T}(color.r, color.g, color.b, 1)
 
 Base.convert(::Type{OpaqueGrayscaleColor{T}}, color::GrayscaleColor{T}) where T = OpaqueGrayscaleColor{T}(color.v)
-Base.convert(::Type{GrayscaleColor{T}}, color::OpaqueGrayscaleColor{T}) where T = GrayscaleColor{T}(color.v, 0)
+Base.convert(::Type{GrayscaleColor{T}}, color::OpaqueGrayscaleColor{T}) where T = GrayscaleColor{T}(color.v, 1)
 
 Base.convert(::Type{OpaqueColor{T}}, color::Union{GrayscaleColor{T}, OpaqueGrayscaleColor{T}}) where T = OpaqueColor{T}(color.v, color.v, color.v)
 Base.convert(::Type{Color{T}}, color::GrayscaleColor{T})       where T = Color{T}(color.v, color.v, color.v, color.a)
-Base.convert(::Type{Color{T}}, color::OpaqueGrayscaleColor{T}) where T = Color{T}(color.v, color.v, color.v, 0)
+Base.convert(::Type{Color{T}}, color::OpaqueGrayscaleColor{T}) where T = Color{T}(color.v, color.v, color.v, 1)
 
 # Cross-Channel Promotion Rules
 Base.promote_rule(::Type{Color{T1}}, ::Type{Color{T2}}) where {T1, T2} = Color{promote_type(T1, T2)}
