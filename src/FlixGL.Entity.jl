@@ -50,7 +50,7 @@ end
 # Scene Graphing
 VPECore.parent!(child::AbstractEntity, parent::AbstractEntity) = parent!(transformof(child), transformof(parent))
 VPECore.deparent!(ntt::AbstractEntity) = deparent!(transformof(ntt))
-parentof(child::AbstractEntity) = getcustomdata(AbstractEntity, transformof(child))
+parentof(child::AbstractEntity) = (parent = transformof(child).parent; parent === nothing ? nothing : getcustomdata(AbstractEntity, parent))
 childrenof(T::Type{<:AbstractEntity}, ntt::AbstractEntity) = filter!(child -> child !== nothing, [getcustomdata(T, child) for child ∈ transformof(ntt).children])
 childrenof(ntt::AbstractEntity) = childrenof(AbstractEntity, ntt)
 Base.push!(world::World, ntt::AbstractEntity) = push!(world, transformof(ntt))
