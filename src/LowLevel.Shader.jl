@@ -53,7 +53,7 @@ function shader_compile(shdr::AbstractShader)
     end
 end
 
-function destroy(shdr::AbstractShader)
+function Base.close(shdr::AbstractShader)
     ModernGL.glDeleteShader(glid(shdr))
     checkglerror()
 end
@@ -70,7 +70,7 @@ function program(shaders::Vararg{<:AbstractShader}; autodelete_shaders::Bool = t
     for shdr in shaders
         program_detach(prog, shdr)
         if autodelete_shaders
-            destroy(shdr)
+            close(shdr)
         end
     end
     
@@ -101,7 +101,7 @@ function program_detach(prog::Program, shdr::AbstractShader)
     checkglerror()
 end
 
-function destroy(prog::Program)
+function Base.close(prog::Program)
     ModernGL.glDeleteProgram(glid(prog))
     checkglerror()
 end

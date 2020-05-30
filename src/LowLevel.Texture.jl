@@ -96,7 +96,7 @@ function use(tex::AbstractTexture; unit::Integer = 1)
     checkglerror()
 end
 
-function destroy(tex::AbstractTexture)
+function Base.close(tex::AbstractTexture)
     ModernGL.glDeleteTextures(1, pointer([tex.glid]))
     checkglerror()
 end

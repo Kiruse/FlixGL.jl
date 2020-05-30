@@ -13,10 +13,10 @@ struct Sprite2DVAO <: AbstractVertexArrayData
     static::Bool
 end
 
-function destroy(vao::Sprite2DVAO)
-    LowLevel.destroy(vao.internal)
-    LowLevel.destroy(vao.vbo_coords)
-    LowLevel.destroy(vao.vbo_uvs)
+function Base.close(vao::Sprite2DVAO)
+    close(vao.internal)
+    close(vao.vbo_coords)
+    close(vao.vbo_uvs)
 end
 
 

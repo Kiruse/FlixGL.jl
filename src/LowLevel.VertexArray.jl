@@ -51,7 +51,7 @@ function use(va::VertexArray)
     checkglerror()
 end
 
-function destroy(va::VertexArray)
+function Base.close(va::VertexArray)
     vas = [glid(va)]
     ModernGL.glDeleteVertexArrays(1, pointer[vas])
     checkglerror()

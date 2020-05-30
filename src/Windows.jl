@@ -24,16 +24,26 @@ mutable struct WindowCreationArgs
 end
 WindowCreationArgs(title::AbstractString = "<untitled window>") = WindowCreationArgs(title, 1, dontcare, dontcare, Borderless, dontcare, dontcare)
 
+"""
+Event dispatcher representing a GLFW-handled window.
+
+Events:
+- :WindowActivate, :WindowDeactivate
+- :WindowResize - receives window's new (width, height)
+- :BeforeWindowClose
+"""
 mutable struct Window
     handle::GLFW.Window
     monitor::Optional{Monitor}
+    listeners::ListenersType
     
     function Window(handle, monitor)
-        wnd = new(handle, monitor)
+        wnd = new(handle, monitor, ListenersType())
         GLFW.SetWindowSizeCallback(handle, curry(wndresizecallback, wnd))
         wnd
     end
 end
+VPECore.eventlisteners(wnd::Window) = wnd.listeners
 
 function Window(args::WindowCreationArgs)
     if args.monitor !== nothing && args.monitor > length(Monitors) args.monitor = 1 end
@@ -86,11 +96,22 @@ Base.resize!(wnd::Window, width::Integer, height::Integer) = (GLFW.SetWindowSize
 
 function wndresizecallback(wnd, _, width, height)
     ModernGL.glViewport(0, 0, width, height)
+    emit(wnd, :WindowResize, (width, height))
 end
 
 activewindow() = active_wnd
-use(wnd::Window) = (global active_wnd; active_wnd = wnd; GLFW.MakeContextCurrent(wnd.handle))
-destroy(wnd::Window) = GLFW.DestroyWindow(wnd.handle)
+function use(wnd::Window)
+    global active_wnd
+    oldwnd = active_wnd
+    active_wnd = wnd
+    GLFW.MakeContextCurrent(wnd.handle)
+    emit(oldwnd, :WindowDeactivate)
+    emit(wnd, :WindowActivate)
+end
+function Base.close(wnd::Window)
+    emit(wnd, :BeforeWindowClose)
+    GLFW.DestroyWindow(wnd.handle)
+end
 
 function setfullscreen!(wnd::Window, monitor::Monitor)
     wnd.monitor = monitor

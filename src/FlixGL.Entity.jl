@@ -42,7 +42,7 @@ VPECore.obj2world(ntt::AbstractEntity) = obj2world(transformof(ntt))
 VPECore.world2obj(ntt::AbstractEntity) = world2obj(transformof(ntt))
 
 # Free OpenGL resources at will
-function destroy(ntt::AbstractEntity)
+function Base.close(ntt::AbstractEntity)
     delete(vaoof(ntt))
 end
 

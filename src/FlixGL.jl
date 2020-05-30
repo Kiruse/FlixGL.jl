@@ -4,7 +4,7 @@ import GLFW
 using StaticArrays
 using VPECore
 
-export use, destroy, upload
+export use, upload
 
 const dir_assets  = "$(@__DIR__)/../assets"
 const dir_shaders = "$dir_assets/shaders"
@@ -35,7 +35,7 @@ end
 function __exit__()
     wnd = activewindow()
     if wnd
-        destroy(activewindow())
+        close(activewindow())
     end
 end
 atexit(__exit__)

@@ -9,7 +9,7 @@ as well as some extra metadata (`static::Bool` and `readable::Bool`). This data 
 destroyed.
 """
 abstract type AbstractVertexArrayData end
-destroy(vao::AbstractVertexArrayData) = error("`destroy` must be implemented for custom AbstractVertexArrayData '$(typeof(vao))'!")
+close(vao::AbstractVertexArrayData) = error("`destroy` must be implemented for custom AbstractVertexArrayData '$(typeof(vao))'!")
 internalvao(vao::AbstractVertexArrayData) = vao.internal
 
 upload(verts::AbstractArray{<:AbstractVertex}; static::Bool = true, readable::Bool = false) = error("Not implemented")
