@@ -87,11 +87,13 @@ function collectentities!(results::Vector{T}, world::World, cls::Type{<:EntityCl
     results
 end
 function collectentities!(results::Vector{T}, ntt::AbstractEntity, cls::Type{<:EntityClass}) where {T<:AbstractEntity}
-    if isentityclass(ntt, cls)
-        push!(results, ntt)
-    end
-    for child ∈ childrenof(T, ntt)
-        collectentities!(results, child, cls)
+    if isa(ntt, T)
+        if isentityclass(ntt, cls)
+            push!(results, ntt)
+        end
+        for child ∈ childrenof(T, ntt)
+            collectentities!(results, child, cls)
+        end
     end
     results
 end
