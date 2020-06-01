@@ -20,7 +20,7 @@ function setbgcolor(color::NormColor3)
         texcol = White+Alpha
         _bgsprite = Sprite2D(2, 2, texture(Image2D([texcol texcol; texcol texcol])), taint=color+Alpha)
     else
-        update!(_bgsprite, taint=color+Alpha)
+        change!(_bgsprite, taint=color+Alpha)
     end
     
     _bgcolor = color
