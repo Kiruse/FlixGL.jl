@@ -6,6 +6,7 @@ import .LowLevel: AbstractTextureWrap, RepeatWrap, RepeatMirroredWrap, ClampToEd
 export AbstractTexture, Texture2D
 export AbstractTextureWrap, RepeatWrap, RepeatMirroredWrap, ClampToEdgeWrap, ClampToBorderWrap
 export texture, wrapping!
+export texturetype
 
 abstract type AbstractTexture end
 
@@ -30,6 +31,8 @@ end
 
 # TODO: DepthTexture and DepthStencilTexture structs
 
+
+texturetype(::Type{Image2D}) = Texture2D
 
 module TextureInternal
 using ..FlixGL
