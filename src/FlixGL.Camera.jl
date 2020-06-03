@@ -4,7 +4,7 @@ export Camera2D
 abstract type AbstractCamera end
 
 struct Camera2D{T} <: AbstractCamera
-    transform::SomeTransform2D{T}
+    transform::Entity2DTransform{T}
 end
 Camera2D{T}() where T = Camera2D{T}(defaulttransform())
 Camera2D() = Camera2D{Float64}()

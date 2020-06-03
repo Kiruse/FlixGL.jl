@@ -46,6 +46,6 @@ default_transform_type() = _default_transform_type
 default_transform_type!(T::Type{<:AbstractTransform}) = (global _default_transform_type; _default_transform_type = T)
 defaulttransform() = default_transform_type()()
 
-_default_transform_type = Transform2D{AbstractEntity2D, Float64}
+_default_transform_type = Entity2DTransform{Float64}
 
 end # module

@@ -44,7 +44,7 @@ end
 mutable struct Sprite2D{T<:Real} <: AbstractEntity2D
     vao::Sprite2DVAO
     visible::Bool
-    transform::Transform2D{AbstractEntity2D, T}
+    transform::Entity2DTransform{T}
     material::AbstractMaterial
     vertices::Vector{Sprite2DVertex}
 end
@@ -56,7 +56,7 @@ function Sprite2D(width::Integer,
                   taint::Color = White+Alpha,
                   originoffset::Union{Vector2, NTuple{2, <:Real}} = (0, 0),
                   static::Bool = true,
-                  transform::SomeTransform2D{T} = defaulttransform()
+                  transform::SomeEntity2DTransform{T} = defaulttransform()
                  ) where T
     verts = getspriteverts((width, height), originoffset, frame)
     Sprite2D{T}(upload(verts, static=static), true, transform, Sprite2DMaterial(tex, taint), verts)

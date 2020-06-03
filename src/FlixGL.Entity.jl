@@ -10,8 +10,9 @@ entityclass(::Type) = WorldEntity()
 abstract type AbstractEntity end
 abstract type AbstractEntity2D <: AbstractEntity end
 
-const SomeTransform{T}   = AbstractTransform{<:AbstractEntity, T}
-const SomeTransform2D{T} = AbstractTransform2D{<:AbstractEntity2D, T}
+const Entity2DTransform{T} = Transform2D{AbstractEntity2D, T}
+const SomeEntityTransform{T}   = AbstractTransform{<:AbstractEntity, T}
+const SomeEntity2DTransform{T} = AbstractTransform2D{<:AbstractEntity2D, T}
 
 # Entity Characteristics
 wantsrender(ntt::AbstractEntity) = false
