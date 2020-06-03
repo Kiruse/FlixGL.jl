@@ -41,18 +41,12 @@ function use(mat::Sprite2DMaterial)
 end
 
 
-mutable struct Sprite2D <: AbstractEntity2D
+mutable struct Sprite2D{T<:Real} <: AbstractEntity2D
     vao::Sprite2DVAO
     visible::Bool
-    transform::Transform2D
+    transform::Transform2D{AbstractEntity2D, T}
     material::AbstractMaterial
     vertices::Vector{Sprite2DVertex}
-    
-    function Sprite2D(vao, visible, transform, material, vertices)
-        inst = new(vao, visible, transform, material, vertices)
-        transform.customdata = inst
-        inst
-    end
 end
 
 function Sprite2D(width::Integer,
@@ -62,10 +56,10 @@ function Sprite2D(width::Integer,
                   taint::Color = White+Alpha,
                   originoffset::Union{Vector2, NTuple{2, <:Real}} = (0, 0),
                   static::Bool = true,
-                  transform::Transform2D = Transform2D{Float64}()
-                 )
+                  transform::SomeTransform2D{T} = defaulttransform()
+                 ) where T
     verts = getspriteverts((width, height), originoffset, frame)
-    Sprite2D(upload(verts, static=static), true, transform, Sprite2DMaterial(tex, taint), verts)
+    Sprite2D{T}(upload(verts, static=static), true, transform, Sprite2DMaterial(tex, taint), verts)
 end
 
 wantsrender(sprite::Sprite2D) = sprite.visible

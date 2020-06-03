@@ -1,7 +1,7 @@
 export EntityClass, WorldEntity, entityclass
 export AbstractEntity, AbstractEntity2D
-export vertsof, transformof
-export parentof, childrenof, setvisibility, isvisible, setvisible, sethidden, collectentities, collectentities!, isentityclass
+export vertsof
+export setvisibility, isvisible, setvisible, sethidden, collectentities, collectentities!, isentityclass
 
 abstract type EntityClass end
 struct WorldEntity <: EntityClass end
@@ -10,14 +10,17 @@ entityclass(::Type) = WorldEntity()
 abstract type AbstractEntity end
 abstract type AbstractEntity2D <: AbstractEntity end
 
+const SomeTransform{T}   = AbstractTransform{<:AbstractEntity, T}
+const SomeTransform2D{T} = AbstractTransform2D{<:AbstractEntity2D, T}
+
 # Entity Characteristics
 wantsrender(ntt::AbstractEntity) = false
 vertsof(    ntt::AbstractEntity) = error("Not implemented")
 countverts( ntt::AbstractEntity) = length(vertsof(ntt))
 vaoof(      ntt::AbstractEntity) = ntt.vao
-transformof(ntt::AbstractEntity) = ntt.transform
 materialof( ntt::AbstractEntity) = ntt.material
 drawmodeof( ntt::AbstractEntity) = LowLevel.TrianglesDrawMode
+VPECore.transformof(ntt::AbstractEntity) = ntt.transform
 
 # Generic Entity Getters/Setters
 isvisible(ntt::AbstractEntity) = ntt.visible
@@ -47,16 +50,6 @@ function Base.close(ntt::AbstractEntity)
 end
 
 
-# Scene Graphing
-VPECore.parent!(child::AbstractEntity, parent::AbstractEntity) = parent!(transformof(child), transformof(parent))
-VPECore.deparent!(ntt::AbstractEntity) = deparent!(transformof(ntt))
-parentof(child::AbstractEntity) = (parent = transformof(child).parent; parent === nothing ? nothing : getcustomdata(AbstractEntity, parent))
-childrenof(T::Type{<:AbstractEntity}, ntt::AbstractEntity) = filter!(child -> child !== nothing, [getcustomdata(T, child) for child ∈ transformof(ntt).children])
-childrenof(ntt::AbstractEntity) = childrenof(AbstractEntity, ntt)
-Base.push!(world::World, ntt::AbstractEntity) = push!(world, transformof(ntt))
-Base.delete!(world::World, ntt::AbstractEntity) = delete!(world, transformof(ntt))
-
-
 # Helper method to get rectangular vertex coordinates
 function getrectcoords(width, height, originoffset)
     halfwidth  = width  / 2
@@ -79,10 +72,7 @@ function collectentities(T::Type{<:AbstractEntity}, world::World, cls::Type{<:En
 end
 function collectentities!(results::Vector{T}, world::World, cls::Type{<:EntityClass}) where {T<:AbstractEntity}
     for root ∈ world.roots
-        ntt = getcustomdata(T, root)
-        if ntt !== nothing
-            collectentities!(results, ntt, cls)
-        end
+        collectentities!(results, root, cls)
     end
     results
 end

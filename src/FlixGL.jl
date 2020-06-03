@@ -5,6 +5,7 @@ using StaticArrays
 using VPECore
 
 export use, upload
+export default_transform_type, default_transform_type!, defaulttransform
 
 const dir_assets  = "$(@__DIR__)/../assets"
 const dir_shaders = "$dir_assets/shaders"
@@ -23,8 +24,8 @@ include("./FlixGL.Texture.jl")
 include("./FlixGL.Material.jl")
 include("./FlixGL.UniformIdentifier.jl")
 include("./FlixGL.FrameDrivers.jl")
-include("./FlixGL.Camera.jl")
 include("./FlixGL.Entity.jl")
+include("./FlixGL.Camera.jl")
 include("./FlixGL.RenderPipeline.jl")
 include("./FlixGL.RenderForward.jl")
 
@@ -39,5 +40,12 @@ function __exit__()
     end
 end
 atexit(__exit__)
+
+
+default_transform_type() = _default_transform_type
+default_transform_type!(T::Type{<:AbstractTransform}) = (global _default_transform_type; _default_transform_type = T)
+defaulttransform() = default_transform_type()()
+
+_default_transform_type = Transform2D{AbstractEntity2D, Float64}
 
 end # module

@@ -9,7 +9,7 @@ FlixGL.use(wnd)
 initwindow()
 setbgcolor(Cyan3)
 
-world = World{Transform2D{Float64}}()
+world = World{AbstractEntity2D}()
 
 cam = Camera2D()
 update!(cam)
@@ -38,7 +38,7 @@ frameloop() do dt, ttotal
     
     GLFW.PollEvents()
     render_background(ForwardRenderPipeline)
-    render(ForwardRenderPipeline, WorldRenderSpace, cam, getrenderables(AbstractEntity2D, world, WorldEntity))
+    render(ForwardRenderPipeline, WorldRenderSpace, cam, getrenderables!(AbstractEntity2D[], world, WorldEntity))
     FlixGL.flip()
     
     return !wantsclose()
