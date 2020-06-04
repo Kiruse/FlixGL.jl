@@ -1,5 +1,6 @@
 export EntityClass, WorldEntity, entityclass
 export AbstractEntity, AbstractEntity2D
+export Entity2DTransform
 export vertsof
 export setvisibility, isvisible, setvisible, sethidden, collectentities, collectentities!, isentityclass
 
