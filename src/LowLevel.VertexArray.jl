@@ -51,11 +51,12 @@ function use(va::VertexArray)
     checkglerror()
 end
 
-function Base.close(va::VertexArray)
+function destroy(va::VertexArray)
     vas = [glid(va)]
     ModernGL.glDeleteVertexArrays(1, pointer[vas])
     checkglerror()
 end
+Base.close(va::VertexArray) = destroy(va)
 
 function findattribute(prog::Program, name::String)
     id = ModernGL.glGetAttribLocation(prog.glid, pointer(name))

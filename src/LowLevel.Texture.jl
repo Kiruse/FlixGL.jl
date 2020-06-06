@@ -96,10 +96,11 @@ function use(tex::AbstractTexture; unit::Integer = 1)
     checkglerror()
 end
 
-function Base.close(tex::AbstractTexture)
+function destroy(tex::AbstractTexture)
     ModernGL.glDeleteTextures(1, pointer([tex.glid]))
     checkglerror()
 end
+Base.close(tex::AbstractTexture) = destroy(tex)
 
 
 function maxtexturecount()
