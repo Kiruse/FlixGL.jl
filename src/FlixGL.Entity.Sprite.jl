@@ -53,7 +53,7 @@ function Sprite2D(width::Integer,
                   height::Integer,
                   tex::Texture2D;
                   frame::Rect = Rect{Float32}(0, 0, 1, 1),
-                  taint::Color = White+Alpha,
+                  taint::Color = White,
                   originoffset::Union{Vector2, NTuple{2, <:Real}} = (0, 0),
                   static::Bool = true,
                   transform::Entity2DTransform{T} = defaulttransform()
