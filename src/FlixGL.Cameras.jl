@@ -7,7 +7,7 @@ struct Camera2D{T} <: AbstractCamera
     transform::Entity2DTransform{T}
 end
 Camera2D{T}() where T = Camera2D{T}(defaulttransform())
-Camera2D() = Camera2D{Float64}()
+Camera2D() = Camera2D{transformparam(default_transform_type())}()
 
 VPECore.obj2world(cam::AbstractCamera) = obj2world(cam.transform)
 VPECore.world2obj(cam::AbstractCamera) = world2obj(cam.transform)
