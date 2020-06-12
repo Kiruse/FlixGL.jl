@@ -55,10 +55,6 @@ function Base.write(io::IO, mat::SMatrix{N, M}) where {N, M}
     end
 end
 
-translationmatrix(translation::Vector2{T}) where T = Matrix3{T}(1, 0, 0, 0, 1, 0, translation[1], translation[2], 1)
-rotationmatrix(rotation::T) where T = (cosr = cos(rotation); sinr = sin(rotation); Matrix3{T}(cosr, sinr, 0, -sinr, cosr, 0, 0, 0, 1))
-scalematrix(scale::Vector2{T}) where T = Matrix3{T}(scale[1], 0, 0, 0, scale[2], 0, 0, 0, 1)
-
 
 """
 Simple data structure comprised of 2 `Vector2`s representing the bottom left and top right corners of a rectangle.
