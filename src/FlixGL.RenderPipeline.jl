@@ -9,6 +9,7 @@ struct DeferredRenderPipeline <: AbstractRenderPipeline end
 abstract type AbstractRenderSpace end
 struct WorldRenderSpace <: AbstractRenderSpace end
 struct ScreenRenderSpace <: AbstractRenderSpace end
+struct NormalizedScreenRenderSpace <: AbstractRenderSpace end
 
 
 function setbgcolor(color::NormColor3)
@@ -17,8 +18,8 @@ function setbgcolor(color::NormColor3)
     
     if _bgsprite == nothing
         # BGSprite enjoys special treatment. It's always rendered first and its screen transform is the identity matrix.
-        texcol = White+Alpha
-        _bgsprite = Sprite2D(2, 2, texture(Image2D([texcol texcol; texcol texcol])), taint=color+Alpha)
+        texcol = White
+        _bgsprite = Sprite2D(2, 2, texture(Image2D(fill(texcol, 2, 2))), taint=convert(NormColor, color))
     else
         change!(_bgsprite, taint=color+Alpha)
     end

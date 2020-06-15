@@ -4,14 +4,20 @@ using LinearAlgebra
 Render a simple background color. This differs from the clear color as it allows transparency on objects above nothing else.
 """
 function render_background(::Type{ForwardRenderPipeline})
-    render(ForwardRenderPipeline, ScreenRenderSpace, getbgsprite())
+    render(ForwardRenderPipeline, NormalizedScreenRenderSpace, getbgsprite())
+end
+
+render(::Type{ForwardRenderPipeline}, ::Type{NormalizedScreenRenderSpace}, ntts) = foreach(ntt->render(ForwardRenderPipeline, NormalizedScreenRenderSpace, ntt), ntts)
+function render(::Type{ForwardRenderPipeline}, ::Type{NormalizedScreenRenderSpace}, ntt::AbstractEntity)
+    mat = materialof(ntt)
+    vao = vaoof(ntt)
     
+    use(mat)
+    LowLevel.uniform(LowLevel.finduniform(programof(mat), "uniScreenTransform"), idmat(Matrix3{Float32}))
+    LowLevel.draw(internalvao(vao), drawmodeof(ntt), countverts(ntt))
 end
 
-function render(::Type{ForwardRenderPipeline}, ::Type{ScreenRenderSpace}, ntts)
-    foreach(ntt->render(ForwardRenderPipeline, ScreenRenderSpace, ntt), ntts)
-end
-
+render(::Type{ForwardRenderPipeline}, ::Type{ScreenRenderSpace}, ntts) = foreach(ntt->render(ForwardRenderPipeline, ScreenRenderSpace, ntt), ntts)
 function render(::Type{ForwardRenderPipeline}, ::Type{ScreenRenderSpace}, ntt::AbstractEntity)
     vphalfsize = size(activewindow()) ./ 2
     screenscalemat = scalematrix3(Float32, 1 ./ vphalfsize) * obj2world(ntt)
